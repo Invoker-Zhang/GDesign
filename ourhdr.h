@@ -94,7 +94,7 @@ typedef struct{
 	uint32	FSINFO_LastClus;		//number of clusters remained
 	uint32	FSINFO_SrchEnt;			//where to find remained clusters
 	uchar	FSINFO_Reserved2[12];	//not used
-	uint	FSINFO_EndSign;			//0xaa5500
+	uint32	FSINFO_EndSign;			//0xaa5500
 }FSINFO;
 
 typedef struct{

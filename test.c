@@ -1,6 +1,7 @@
 #include "ourhdr.h"
 
+
 int main(){
-	format("/dev/sdb1");
+	format("/dev/sdc1");
 	return 0;
 }
