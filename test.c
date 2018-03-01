@@ -2,6 +2,6 @@
 
 
 int main(){
-	format("/dev/sdc1");
+	format("/dev/sdb1");
 	return 0;
 }

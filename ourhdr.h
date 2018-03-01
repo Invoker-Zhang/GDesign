@@ -28,12 +28,17 @@ void	err_msg(const char *, ...);
 void	err_quit(const char*, ...);
 void	err_ret(const char*, ...);
 void	err_sys(const char*, ...);
+#define disp(x) { printf(""#x": %lld\n",x); }
 
 typedef unsigned char		uchar;
 typedef unsigned char		uint8;
 typedef unsigned short		uint16;
 typedef unsigned int		uint32;
 typedef unsigned long long	uint64;
+
+#define MIN_FREE_SPACE		5 * 1024 * 1024 * 1024
+#define VIDEO_FILE_SIZE		256 * 1024 * 1024
+#define VIDEO_FILE_NUM_PER_PACK		10
 
 extern unsigned long long	totalSize;			//disk size in byte
 extern unsigned int			sectorSize;			//sector size
@@ -42,6 +47,7 @@ extern unsigned long		reservedOff;		//
 extern unsigned long		fatOff;				//fat offset
 extern unsigned long		dataOff;			//data offset
 extern unsigned long		dataSize;			//data size in sector
+extern unsigned long		cluster_number;
 
 
 extern void format(char* device);

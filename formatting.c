@@ -4,14 +4,11 @@
 #define			RESERVED_SECTORS		32
 #define			SECTORS_PER_CLUSTER		8
 
-//todel
-#define disp(x) { printf(""#x": %ld\n",x); }
 
-
-unsigned int		sector_size;
+unsigned int		sector_size			= 512;
 unsigned int		sectors_per_cluster = SECTORS_PER_CLUSTER;
 unsigned long long	total_size;
-unsigned long		total_sectors;
+unsigned long long	total_sectors;
 unsigned long		reserved_start = 0;
 unsigned long		reserved_sectors = RESERVED_SECTORS;
 unsigned long		fat_start;
@@ -24,17 +21,21 @@ void format(char* device ){
 	int fd;
 
 	if( (fd = open(device, O_WRONLY, FILE_MODE)) < 0)		err_quit("open error");
-
+/*
 	if( ioctl(fd, BLKBSZGET, &sector_size) < 0){
 		fprintf(stderr, "ioctl failed %s\n", strerror(errno));
 		return;
 	}
+*/
 	
+	disp(sector_size);
 	unsigned long long end;
 	if( (end = lseek(fd, 0, SEEK_END)) < 0 )		err_quit("lseek error");
 	total_size = end;
 
+	disp(total_size);
 	total_sectors = total_size / sector_size;
+	disp(total_sectors);
 
 	fat_start				= reserved_sectors;
 	fat_sectors				= 4 * (total_sectors - reserved_sectors) / (4*FAT_NUMBER + sector_size*sectors_per_cluster);
@@ -109,12 +110,33 @@ void format(char* device ){
 	disp(data_sectors);
 	disp(cluster_number);
 	
+	uint32 folderNum;
+	uint32 lastFolderFileNum;
+	uint32 nextClus			= 3;
+
+	if(data_sectors * sector_size < MIN_FREE_SIZE)	err_quit("fail to pre-allocation, there are not enough space");
+	//get the folderNum and lastFolderFileNum
+
+	for(int i = 0; i < folderNum; i++){
+		writeFatEntries(fd, fat_start, nextClus, 1);
+		nextClus++;
+	}
 
 	close(fd);
 }
 
 
+void writeFatEntries(int fd,uint64 fatStart, uint32 entryNum, uint32 clusNum){
+	uint32 content = entryNum;
 
+	lseek(fd, fatStart + entryNum * 4, SEEK_SET);
+	for(int i  = 0; i < clusNum - 1; i++){
+		write(fd, &content, sizeof(content));
+		content ++;
+	}
+	content = 0x0fffffff;
+	write(fd, &content, sizeof(content));
+}
 
 
 
