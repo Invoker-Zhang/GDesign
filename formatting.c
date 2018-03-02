@@ -1,26 +1,41 @@
 #include "ourhdr.h"
 
+#define			SECTOR_SIZE		512
 #define			FAT_NUMBER		2
 #define			RESERVED_SECTORS		32
 #define			SECTORS_PER_CLUSTER		8
 
+/*
+uint64	sector_size			= 512;
+uint64	sectors_per_cluster = SECTORS_PER_CLUSTER;
+uint64	total_size;
+uint64	total_sectors;
+uint64	reserved_start = 0;
+uint64	reserved_sectors = RESERVED_SECTORS;
+uint64	fat_start;
+uint64	fat_sectors;
+uint64	data_start;
+uint64	data_sectors;
+uint64	cluster_number;
+*/
 
-unsigned int		sector_size			= 512;
-unsigned int		sectors_per_cluster = SECTORS_PER_CLUSTER;
-unsigned long long	total_size;
-unsigned long long	total_sectors;
-unsigned long		reserved_start = 0;
-unsigned long		reserved_sectors = RESERVED_SECTORS;
-unsigned long		fat_start;
-unsigned long		fat_sectors;
-unsigned long		data_start;
-unsigned long		data_sectors;
-unsigned long		cluster_number;
+void writeFatEntries(int fd,uint64 fatStart, uint32 entryNum, uint32 clusNum);
+void addFDT(int fd,uint64 data_start,  uint64 dirClus, SHORT_FDT* fdt);
 
 void format(char* device ){
 	int fd;
+	uint64 sector_size = SECTOR_SIZE;
+	uint64 sectors_per_cluster = SECTORS_PER_CLUSTER;
+	uint64 total_size;
+	uint64 total_sectors;
+	uint64 reserved_sectors = RESERVED_SECTORS;
+	uint64 fat_start;
+	uint64 fat_sectors;
+	uint64 data_start;
+	uint64 data_sectors;
+	uint64 cluster_number;
 
-	if( (fd = open(device, O_WRONLY, FILE_MODE)) < 0)		err_quit("open error");
+	if( (fd = open(device, O_RDWR, FILE_MODE)) < 0)		err_quit("open error");
 /*
 	if( ioctl(fd, BLKBSZGET, &sector_size) < 0){
 		fprintf(stderr, "ioctl failed %s\n", strerror(errno));
@@ -29,9 +44,7 @@ void format(char* device ){
 */
 	
 	disp(sector_size);
-	unsigned long long end;
-	if( (end = lseek(fd, 0, SEEK_END)) < 0 )		err_quit("lseek error");
-	total_size = end;
+	if( (total_size = lseek(fd, 0, SEEK_END)) < 0 )		err_quit("lseek error");
 
 	disp(total_size);
 	total_sectors = total_size / sector_size;
@@ -93,6 +106,7 @@ void format(char* device ){
 	lseek(fd, 7*sector_size, SEEK_SET);
 	write(fd, &FSINFO_sector, sizeof(FSINFO_sector) );
 
+
 	//write initial fat entries
 	uint32	fat_entry = 0x0ffffff8;
 	lseek(fd, fat_start * sector_size + 0 * 4,SEEK_SET);
@@ -102,6 +116,20 @@ void format(char* device ){
 	fat_entry		= 0x0fffffff;
 	write(fd, &fat_entry, sizeof(fat_entry) );
 
+	char fileName[12] = "video      ";
+	time_t t;
+	struct tm * curTime = NULL;
+	time(&t);
+	curTime = gmtime(&t);
+
+	SHORT_FDT rootDir = {0};
+	fillFDT(rootDir, fileName, 0x08, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, curTime->tm_sec/2 , curTime->tm_min, curTime->tm_hour, curTime->tm_mday, curTime->tm_mon, curTime->tm_year, 0);
+	
+	lseek(fd, data_start* sector_size, SEEK_SET);
+	write(fd, &rootDir, sizeof(rootDir));
+	
+
+	close(fd);
 
 	//todel
 	disp(fat_start);
@@ -109,27 +137,16 @@ void format(char* device ){
 	disp(data_start);
 	disp(data_sectors);
 	disp(cluster_number);
-	
-	uint32 folderNum;
-	uint32 lastFolderFileNum;
-	uint32 nextClus			= 3;
-
-	if(data_sectors * sector_size < MIN_FREE_SIZE)	err_quit("fail to pre-allocation, there are not enough space");
-	//get the folderNum and lastFolderFileNum
-
-	for(int i = 0; i < folderNum; i++){
-		writeFatEntries(fd, fat_start, nextClus, 1);
-		nextClus++;
-	}
-
-	close(fd);
 }
-
-
+//fuction: allocate clusNum clusters for a file and fill the fat entries correspondly.
+//fd: device's file descirptor
+//fatStart: sector number of fat start
+//entryNum: next cluster number available
+//clusNum: number of clusters this file needed
 void writeFatEntries(int fd,uint64 fatStart, uint32 entryNum, uint32 clusNum){
 	uint32 content = entryNum;
 
-	lseek(fd, fatStart + entryNum * 4, SEEK_SET);
+	lseek(fd, fatStart*SECTOR_SIZE+ entryNum * 4, SEEK_SET);
 	for(int i  = 0; i < clusNum - 1; i++){
 		write(fd, &content, sizeof(content));
 		content ++;
@@ -138,11 +155,18 @@ void writeFatEntries(int fd,uint64 fatStart, uint32 entryNum, uint32 clusNum){
 	write(fd, &content, sizeof(content));
 }
 
-
-
-
-
-
+void addFDT(int fd, uint64 data_start, uint64 clusNum, SHORT_FDT* fdt){
+	SHORT_FDT tempFDT;
+	uint64 offset = (data_start + (clusNum - 2) * SECTORS_PER_CLUSTER ) * SECTOR_SIZE;
+	lseek(fd,offset, SEEK_SET);
+	do{
+		read(fd, &tempFDT, sizeof(tempFDT));
+		offset += sizeof(tempFDT);
+	}while(tempFDT.FilName[0]);
+	offset -= sizeof(tempFDT);
+	lseek(fd, offset, SEEK_SET);
+	write(fd, fdt, sizeof(SHORT_FDT));
+}
 
 
 

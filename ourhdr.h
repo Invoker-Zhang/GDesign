@@ -12,6 +12,7 @@
 #include <errno.h>
 #include <linux/fs.h>
 #include <sys/vfs.h>
+#include <time.h>
 
 #define MAXLINE 4096
 
@@ -40,14 +41,16 @@ typedef unsigned long long	uint64;
 #define VIDEO_FILE_SIZE		256 * 1024 * 1024
 #define VIDEO_FILE_NUM_PER_PACK		10
 
-extern unsigned long long	totalSize;			//disk size in byte
-extern unsigned int			sectorSize;			//sector size
-extern unsigned int			fatSize;			//fat size int sector
-extern unsigned long		reservedOff;		//
-extern unsigned long		fatOff;				//fat offset
-extern unsigned long		dataOff;			//data offset
-extern unsigned long		dataSize;			//data size in sector
-extern unsigned long		cluster_number;
+/*
+extern uint64	totalSize;			//disk size in byte
+extern uint64	sectorSize;			//sector size
+extern uint64	fatSize;			//fat size int sector
+extern uint64	reservedOff;		//
+extern uint64	fatOff;				//fat offset
+extern uint64	dataOff;			//data offset
+extern uint64	dataSize;			//data size in sector
+extern uint64	cluster_number;
+*/
 
 
 extern void format(char* device);
@@ -116,8 +119,7 @@ typedef struct{
 }TIME;
 
 typedef struct{
-	uchar	FilName[8];			//file name, 0x20 if not enough
-	uchar	ExtName[3];			//extended name, filled with 0x20 if not enough
+	uchar	FilName[11];			//file name, 0x20 if not enough, 8-bit filename and 3-bit extended name
 	uchar	Attri;				//Attribution: 0:rdwr ; 1:rdonly ; 10:hide ; 100:system ; 1000:volumn ; 10000:subdir ; 100000:archive ; 0x0f:long fdt.
 	uchar	Reserved;
 	uchar	MilliTime;			//10 ms
@@ -131,6 +133,30 @@ typedef struct{
 	uint32	FileLength;			//file length
 }SHORT_FDT;
 #pragma pack ()
+
+#define fillFDT(fdt, name, attri, millTime, creSec, creMin, creHour,creDay,creMonth,creYear, visitDay, visitMonth, visitYear, clusNum, chgSec, chgMin, chgHour, chgDay, chgMonth, chgYear, length) { \
+	uint64 tempClusNum = clusNum;		\
+	strncpy( fdt.FilName, name, 11 );	\
+	fdt.Attri = attri;		\
+	fdt.MilliTime = millTime; \
+	fdt.CreateTime.two_sec  = creSec / 2;	\
+	fdt.CreateTime.min = creMin;	\
+	fdt.CreateTime.hour = creHour;	\
+	fdt.CreateDate.day  = creDay;	\
+	fdt.CreateDate.month = creMonth; \
+	fdt.CreateDate.year = creYear;	\
+	fdt.LastVisitDate.day = visitDay; \
+	fdt.LastVisitDate.month = visitMonth; \
+	fdt.LastVisitDate.year = visitYear ; \
+	fdt.HighClus = tempClusNum >> 16;	\
+	fdt.ChangeTime.two_sec = chgSec / 2; \
+	fdt.ChangeTime.min = chgMin;	\
+	fdt.ChangeTime.hour = chgHour; \
+	fdt.ChangeDate.day = chgDay;	\
+	fdt.ChangeDate.year = chgYear;	\
+	fdt.LowClus = (tempClusNum & 0x0000ffff);	\
+	fdt.FileLength = length;	\
+}
 
 
 #endif	/* __ourhdr_h */

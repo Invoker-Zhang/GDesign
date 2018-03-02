@@ -1,15 +1,14 @@
 #include "ourhdr.h"
 
 extern void displaySector(char*, unsigned);
+extern void clearAll(char*);
 
 int main(int argc, char** argv){
 
-	int index = 0;
 
-	if(argc != 3) err_quit("Usage: ./displaySector device sectorNo\n");
-	index = atoi(argv[2]);
+	if(argc != 2) err_quit("Usage: ./clearAll device \n");
 
-	displaySector(argv[1],index);
+	clearAll(argv[1]);
 
 	return 0;
 }

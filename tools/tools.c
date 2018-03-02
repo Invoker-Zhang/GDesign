@@ -19,3 +19,19 @@ void displaySector(char* device, unsigned offset){
 
 	close(fd);
 }
+
+#define BUF_SIZE	4096
+void clearAll(char *device){
+	int fd;
+	int writeNum;
+
+	if( (fd = open(device, O_WRONLY)) < 0)	err_sys("open error");
+	
+	char buf[BUF_SIZE] = {0};
+
+	do{
+		writeNum = write( fd, buf, BUF_SIZE);
+	}while(writeNum == BUF_SIZE);
+
+	close(fd);
+}
