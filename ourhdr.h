@@ -37,9 +37,22 @@ typedef unsigned short		uint16;
 typedef unsigned int		uint32;
 typedef unsigned long long	uint64;
 
-#define MIN_FREE_SPACE		5 * 1024 * 1024 * 1024
-#define VIDEO_FILE_SIZE		256 * 1024 * 1024
+//macros about disk structure
+#define	SECTOR_SIZE				512
+#define	FAT_NUMBER				2
+#define	RESERVED_SECTORS		32
+#define	SECTORS_PER_CLUSTER		8
+#define	CLUSTER_SIZE	(SECTOR_SIZE * SECTORS_PER_CLUSTER)
+
+
+
+//macros about folder structure when it pre-allocates
+#define MIN_FREE_SPACE		(5 * (1 << 30))
+#define VIDEO_FILE_SIZE		((1 << 28) / CLUSTER_SIZE)
 #define VIDEO_FILE_NUM_PER_PACK		10
+#define INDEX_FILE_NUM_PER_FOLDER	2
+#define INDEX_FILE_SIZE				1 //in cluster
+#define ALLOC_FILE_SIZE				1 //In cluster
 
 /*
 extern uint64	totalSize;			//disk size in byte
@@ -54,6 +67,8 @@ extern uint64	cluster_number;
 
 
 extern void format(char* device);
+extern void pre_allocation(char *device);
+extern void clearSectors(int fd, uint64 start, uint64 num);
 
 #pragma pack (1)
 typedef struct BIOS_PARAMETER_BLOCK{
@@ -134,7 +149,13 @@ typedef struct{
 }SHORT_FDT;
 #pragma pack ()
 
-#define fillFDT(fdt, name, attri, millTime, creSec, creMin, creHour,creDay,creMonth,creYear, visitDay, visitMonth, visitYear, clusNum, chgSec, chgMin, chgHour, chgDay, chgMonth, chgYear, length) { \
+#define fillFDT(fdt, name, attri, millTime, \
+		creSec, creMin, creHour,creDay,creMonth,creYear, \
+		visitDay, visitMonth, visitYear, \
+		clusNum, \
+		chgSec, chgMin, chgHour, chgDay, chgMonth, chgYear,\
+		length) \
+{ \
 	uint64 tempClusNum = clusNum;		\
 	strncpy( fdt.FilName, name, 11 );	\
 	fdt.Attri = attri;		\
