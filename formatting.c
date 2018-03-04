@@ -106,6 +106,14 @@ void format(char* device ){
 	write(fd, &fat_entry, sizeof(fat_entry) );
 	fat_entry		= 0x0fffffff;
 	write(fd, &fat_entry, sizeof(fat_entry) );
+
+	fat_entry = 0x0ffffff8;
+	lseek(fd, (fat_start + fat_sectors)*sector_size,SEEK_SET);
+	write(fd, &fat_entry, sizeof(fat_entry));
+	fat_entry = 0x0fffffff;
+	write(fd, &fat_entry, sizeof(fat_entry));
+
+	write(fd, &fat_entry, sizeof(fat_entry));
 /*
 	char fileName[12] = "video      ";
 	time_t t;

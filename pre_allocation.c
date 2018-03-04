@@ -14,6 +14,7 @@ void pre_allocation(char *device){
 	uint64 reserved_sectors = RESERVED_SECTORS;
 	uint64 fat_start;
 	uint64 fat_sectors;
+	uint64 fat_backup_start;
 	uint64 data_start;
 	uint64 data_sectors;
 	uint64 cluster_number;
@@ -21,22 +22,20 @@ void pre_allocation(char *device){
 	if( (fd = open(device, O_RDWR, FILE_MODE)) < 0)	
 		err_quit("open error");
 
-	disp(sector_size);
 	if( (total_size = lseek(fd, 0, SEEK_END)) < 0 )	
 		err_quit("lseek error");
 
-	disp(total_size);
 	total_sectors = total_size / sector_size;
-	disp(total_sectors);
 
 	fat_start				= reserved_sectors;
 	fat_sectors	= 4 * (total_sectors - reserved_sectors)  
 		/ (4*FAT_NUMBER + sector_size*sectors_per_cluster);
+	fat_backup_start = fat_start + fat_sectors;
 	data_start	= fat_start + fat_sectors*FAT_NUMBER;
 	data_sectors = total_sectors - data_start -1;
 	cluster_number	= data_sectors / SECTORS_PER_CLUSTER ;
 
-	if(data_sectors * sector_size < MIN_FREE_SPACE)	
+	if(data_sectors < MIN_FREE_SPACE / SECTOR_SIZE)	
 		err_quit("fail to pre-allocation,\
 				there are not enough space");
 
@@ -44,6 +43,10 @@ void pre_allocation(char *device){
 	uint32 dirSize = (3 + VIDEO_FILE_NUM_PER_PACK) / 
 		(sector_size * SECTORS_PER_CLUSTER / 
 		 sizeof(SHORT_FDT)) + 1;
+
+	disp(cluster_number);
+	disp(fat_backup_start);
+	disp(dirSize);
 
 	uint32 folderNum = 0;
 	uint32 lastFolderFileNum = 0;
@@ -102,6 +105,7 @@ void pre_allocation(char *device){
 
 	for(int i = 0; i < folderNum; i++){
 		writeFatEntries(fd, fat_start, nextClus, dirSize);
+		writeFatEntries(fd, fat_backup_start,nextClus, dirSize);
 
 		name[6] = '0' + i / 10;
 		name[7] = '0' + i % 10;
@@ -125,6 +129,8 @@ void pre_allocation(char *device){
 	//allocate fat entries for allocInfo file
 	writeFatEntries(fd, fat_start, nextClus, 
 			ALLOC_FILE_SIZE);
+	writeFatEntries(fd, fat_backup_start, nextClus,
+			ALLOC_FILE_SIZE);
 	fillFDT(fdt, "AllocIfo   ", 0x20 ,0,
 			0,0,0,0,0,0,
 			0,0,0,
@@ -139,6 +145,8 @@ void pre_allocation(char *device){
 	for(int i = 0; i < folderNum - 1; i++){
 		for(int j = 0; j < VIDEO_FILE_NUM_PER_PACK; j++){
 			writeFatEntries(fd, fat_start, nextClus, 
+					VIDEO_FILE_SIZE);
+			writeFatEntries(fd, fat_backup_start,nextClus,
 					VIDEO_FILE_SIZE);
 			int t = j;
 			for(int k = 0; k < 6; k++){
@@ -156,7 +164,10 @@ void pre_allocation(char *device){
 		}
 	}
 	for(int j = 0; j < lastFolderFileNum; j++){
-		writeFatEntries(fd, fat_start, nextClus,VIDEO_FILE_SIZE);
+		writeFatEntries(fd, fat_start, nextClus,
+				VIDEO_FILE_SIZE);
+		writeFatEntries(fd, fat_backup_start, nextClus,
+				VIDEO_FILE_SIZE);
 		int t = j;
 		for(int k = 0; k < 6; k++){
 			name[7-k] = '0' + t % 10;
@@ -171,6 +182,22 @@ void pre_allocation(char *device){
 		addFDT(fd, data_start, folderNum + 2, &fdt);
 		nextClus += VIDEO_FILE_SIZE;
 	}
+
+	//update the fsinfo sector
+	FSINFO fsInfoSec;
+	lseek(fd, 1 * SECTOR_SIZE, SEEK_SET);
+	read(fd, &fsInfoSec, sizeof(fsInfoSec));
+	fsInfoSec.FSINFO_LastClus = cluster_number - nextClus;
+	fsInfoSec.FSINFO_SrchEnt = nextClus;
+
+	disp16(fsInfoSec.FSINFO_LastClus);
+	disp16(fsInfoSec.FSINFO_SrchEnt);
+
+	lseek(fd, 1*SECTOR_SIZE, SEEK_SET);
+	write(fd, &fsInfoSec, sizeof(fsInfoSec));
+	lseek(fd, 7*SECTOR_SIZE, SEEK_SET);
+	write(fd, &fsInfoSec, sizeof(fsInfoSec));
+
 	//TODO write allocInfo file.
 
 	close(fd);
@@ -186,7 +213,7 @@ void writeFatEntries(int fd,
 		uint32 entryNum, 
 		uint32 clusNum)
 {
-	uint32 content = entryNum;
+	uint32 content = entryNum + 1;
 
 	lseek(fd, fatStart*SECTOR_SIZE+ entryNum * 4, SEEK_SET);
 	for(int i  = 0; i < clusNum - 1; i++){

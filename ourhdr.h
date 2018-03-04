@@ -30,6 +30,7 @@ void	err_quit(const char*, ...);
 void	err_ret(const char*, ...);
 void	err_sys(const char*, ...);
 #define disp(x) { printf(""#x": %lld\n",x); }
+#define disp16(x) { printf(""#x": %x\n",x); }
 
 typedef unsigned char		uchar;
 typedef unsigned char		uint8;
