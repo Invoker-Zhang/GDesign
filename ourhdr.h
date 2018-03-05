@@ -29,6 +29,8 @@ void	err_msg(const char *, ...);
 void	err_quit(const char*, ...);
 void	err_ret(const char*, ...);
 void	err_sys(const char*, ...);
+
+
 #define disp(x) { printf(""#x": %lld\n",x); }
 #define disp16(x) { printf(""#x": %x\n",x); }
 
@@ -67,9 +69,6 @@ extern uint64	cluster_number;
 */
 
 
-extern void format(char* device);
-extern void pre_allocation(char *device);
-extern void clearSectors(int fd, uint64 start, uint64 num);
 
 #pragma pack (1)
 typedef struct BIOS_PARAMETER_BLOCK{
@@ -148,6 +147,10 @@ typedef struct{
 	uint16	LowClus;			//low 16-bit of cluster number
 	uint32	FileLength;			//file length
 }SHORT_FDT;
+
+typedef struct{
+
+}LONG_FDT;
 #pragma pack ()
 
 #define fillFDT(fdt, name, attri, millTime, \
@@ -179,6 +182,23 @@ typedef struct{
 	fdt.LowClus = (tempClusNum & 0x0000ffff);	\
 	fdt.FileLength = length;	\
 }
+
+extern void format(char* device);
+extern void pre_allocation(char *device);
+extern void clearSectors(int fd, uint64 start, uint64 num);
+extern void createFile(int fd,
+		uint64 fatStart, 
+		uint64 fatBakStart,
+		uint64 dataStart,
+		uint32 nextClus, 
+		uint32 fileSize,
+		const char* name, 
+		uint32 PDClus,
+		uchar attri);
+void writeFatEntries(int fd,uint64 fatStart, uint32 entryNum, uint32 clusNum);
+void addFDT(int fd,uint64 data_start,  uint64 dirClus, SHORT_FDT* fdt);
+
+
 
 
 #endif	/* __ourhdr_h */

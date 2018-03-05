@@ -60,3 +60,39 @@ static void err_doit(int errnoflag, const char *fmt, va_list ap){
 	fflush(NULL);
 	return ;
 }
+
+void clearSectors(int fd,
+		uint64 start,
+		uint64 number)
+{
+	lseek(fd, start * SECTOR_SIZE, SEEK_SET);
+	char buf[SECTOR_SIZE] = {0};
+	for(int i = 0; i < number; i++){
+		write(fd, buf, SECTOR_SIZE);
+	}
+}
+
+void createFile(int fd,
+		uint64 fatStart, 
+		uint64 fatBakStart,
+		uint64 dataStart,
+		uint32 nextClus, 
+		uint32 fileSize,
+		const char* fileName, 
+		uint32 PDClus,
+		uchar attri)
+{
+	SHORT_FDT fdt;
+	if(attri == 0x20){
+		writeFatEntries(fd, fatStart, nextClus, (fileSize - 1) / CLUSTER_SIZE + 1);
+		writeFatEntries(fd, fatBakStart, nextClus, (fileSize - 1)/ CLUSTER_SIZE + 1);
+		fillFDT(fdt, fileName, attri, 0,
+				0,0,0,0,0,0,
+				0,0,0,
+				nextClus,
+				0,0,0,0,0,0,
+				fileSize);
+		addFDT(fd, dataStart, PDClus, &fdt);
+	}
+	
+}

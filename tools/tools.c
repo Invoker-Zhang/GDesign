@@ -26,12 +26,18 @@ void clearAll(char *device){
 	int writeNum;
 
 	if( (fd = open(device, O_WRONLY)) < 0)	err_sys("open error");
+
+	unsigned long long end = 0;
+	end = lseek(fd, 0, SEEK_END);
+
+	unsigned long	blockNum = (end - 1) / BUF_SIZE + 1;
 	
 	char buf[BUF_SIZE] = {0};
-
-	do{
-		writeNum = write( fd, buf, BUF_SIZE);
-	}while(writeNum == BUF_SIZE);
+	lseek(fd, 0, SEEK_SET);
+	for(int i = 0; i < blockNum; i++){
+		write(fd, buf, BUF_SIZE);
+		fprintf(stderr,"%d%% completed\n",100 * i / blockNum);
+	}
 
 	close(fd);
 }

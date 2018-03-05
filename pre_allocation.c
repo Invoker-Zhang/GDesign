@@ -1,9 +1,5 @@
 #include "ourhdr.h"
 
-void writeFatEntries(int fd,uint64 fatStart, uint32 entryNum, uint32 clusNum);
-void addFDT(int fd,uint64 data_start,  uint64 dirClus, SHORT_FDT* fdt);
-
-
 
 void pre_allocation(char *device){
 	int fd;
@@ -44,7 +40,7 @@ void pre_allocation(char *device){
 		(sector_size * SECTORS_PER_CLUSTER / 
 		 sizeof(SHORT_FDT)) + 1;
 
-	disp(cluster_number);
+	disp16(cluster_number);
 	disp(fat_backup_start);
 	disp(dirSize);
 
@@ -78,6 +74,9 @@ void pre_allocation(char *device){
 			VIDEO_FILE_NUM_PER_PACK ) /
 			VIDEO_FILE_SIZE ;		
 	}
+	disp(folderNum);
+	disp(lastFolderFileNum);
+	
 	clearSectors( fd, 
 			data_start,
 			(1+folderNum * dirSize) * SECTORS_PER_CLUSTER);
@@ -87,13 +86,11 @@ void pre_allocation(char *device){
 	fillFDT(rootDir, "video      ", 0x08, 0,
 			0,0,0,0,0,0,
 			0,0,0,
-			2,
+			0,
 			0,0,0,0,0,0,
 			0);
 	addFDT(fd, data_start, 2, &rootDir);
 	
-	disp(folderNum);
-	disp(lastFolderFileNum);
 	uint32 nextClus			= 3;
 
 	if(folderNum > 100)		
@@ -103,9 +100,10 @@ void pre_allocation(char *device){
 	SHORT_FDT fdt = {0};
 	char name[12] = "folder     ";
 
+	//allocate fat entries for folders
 	for(int i = 0; i < folderNum; i++){
 		writeFatEntries(fd, fat_start, nextClus, dirSize);
-		writeFatEntries(fd, fat_backup_start,nextClus, dirSize);
+		writeFatEntries(fd, fat_backup_start, nextClus, dirSize);
 
 		name[6] = '0' + i / 10;
 		name[7] = '0' + i % 10;
@@ -121,66 +119,93 @@ void pre_allocation(char *device){
 		strncpy(fdt.FilName, ".           ", 11);
 		addFDT(fd, data_start, nextClus, &fdt);
 		strncpy(rootDir.FilName, "..         ", 11);
+		rootDir.Attri = 0x10;
 		addFDT(fd, data_start, nextClus, &rootDir);
 
 		nextClus += dirSize;
 	}
 
 	//allocate fat entries for allocInfo file
-	writeFatEntries(fd, fat_start, nextClus, 
-			ALLOC_FILE_SIZE);
-	writeFatEntries(fd, fat_backup_start, nextClus,
-			ALLOC_FILE_SIZE);
-	fillFDT(fdt, "AllocIfo   ", 0x20 ,0,
-			0,0,0,0,0,0,
-			0,0,0,
+	createFile(fd,
+			fat_start,
+			fat_backup_start,
+			data_start,
 			nextClus,
-			0,0,0,0,0,0,
-			CLUSTER_SIZE);
-	addFDT(fd, data_start,2 , &fdt);
+			ALLOC_FILE_SIZE,
+			"AllocIfo   ",
+			2,
+			0x20);
 	nextClus += ALLOC_FILE_SIZE;
 
-	//create video files in each folder
-	strncpy(name, "ce      mp4", 11);
+	//create video files and index files in each folder
+	//allocate fat entries and fill the items in Parent directory
 	for(int i = 0; i < folderNum - 1; i++){
+		strncpy(name, "ce      mp4", 11);
 		for(int j = 0; j < VIDEO_FILE_NUM_PER_PACK; j++){
-			writeFatEntries(fd, fat_start, nextClus, 
-					VIDEO_FILE_SIZE);
-			writeFatEntries(fd, fat_backup_start,nextClus,
-					VIDEO_FILE_SIZE);
 			int t = j;
 			for(int k = 0; k < 6; k++){
 				name[7-k] = '0' + t % 10;
 				t = t/10;
 			}
-			fillFDT(fdt, name, 0x20, 0,
-					0,0,0,0,0,0,
-					0,0,0,
+			createFile(fd,
+					fat_start,
+					fat_backup_start,
+					data_start,
 					nextClus,
-					0,0,0,0,0,0,
-					VIDEO_FILE_SIZE*CLUSTER_SIZE);
-			addFDT(fd, data_start, i + 1 + 2, &fdt);
+					VIDEO_FILE_SIZE*CLUSTER_SIZE,
+					name,
+					i+1+2,
+					0x20);
 			nextClus += VIDEO_FILE_SIZE;
 		}
+		for(int j = 0; j < INDEX_FILE_NUM_PER_FOLDER;j++){
+			strncpy(name, "Index      ", 11);
+			name[6] = '0' + j % 10;
+			name[5] = '0' + j / 10;
+			createFile(fd,
+					fat_start,
+					fat_backup_start,
+					data_start,
+					nextClus,
+					INDEX_FILE_SIZE *CLUSTER_SIZE,
+					name,
+					i + 1 + 2,
+					0x20);
+			nextClus += INDEX_FILE_SIZE;
+		}
 	}
+	strncpy(name, "ce      mp4",11);
 	for(int j = 0; j < lastFolderFileNum; j++){
-		writeFatEntries(fd, fat_start, nextClus,
-				VIDEO_FILE_SIZE);
-		writeFatEntries(fd, fat_backup_start, nextClus,
-				VIDEO_FILE_SIZE);
 		int t = j;
 		for(int k = 0; k < 6; k++){
 			name[7-k] = '0' + t % 10;
 			t = t/10;
 		}
-		fillFDT(fdt, name, 0x20, 0 ,
-				0,0,0,0,0,0,
-				0,0,0,
-				nextClus,
-				0,0,0,0,0,0,
-				VIDEO_FILE_SIZE*CLUSTER_SIZE);
-		addFDT(fd, data_start, folderNum + 2, &fdt);
+		createFile(fd,
+			fat_start,
+			fat_backup_start,
+			data_start,
+			nextClus,
+			VIDEO_FILE_SIZE*CLUSTER_SIZE,
+			name,
+			folderNum + 2,
+			0x20);
 		nextClus += VIDEO_FILE_SIZE;
+	}
+	for(int j = 0; j < INDEX_FILE_NUM_PER_FOLDER;j++){
+		strncpy(name, "Index      ", 11);
+		name[6] = '0' + j % 10;
+		name[5] = '0' + j / 10;
+		createFile(fd,
+			fat_start,
+			fat_backup_start,
+			data_start,
+			nextClus,
+			INDEX_FILE_SIZE * CLUSTER_SIZE,
+			name,
+			folderNum + 2,
+			0x20);
+		nextClus += INDEX_FILE_SIZE;
 	}
 
 	//update the fsinfo sector
@@ -197,6 +222,7 @@ void pre_allocation(char *device){
 	write(fd, &fsInfoSec, sizeof(fsInfoSec));
 	lseek(fd, 7*SECTOR_SIZE, SEEK_SET);
 	write(fd, &fsInfoSec, sizeof(fsInfoSec));
+
 
 	//TODO write allocInfo file.
 
@@ -246,17 +272,6 @@ void addFDT(int fd,
 	offset -= sizeof(tempFDT);
 	lseek(fd, offset, SEEK_SET);
 	write(fd, fdt, sizeof(SHORT_FDT));
-}
-
-void clearSectors(int fd,
-		uint64 start,
-		uint64 number)
-{
-	lseek(fd, start * SECTOR_SIZE, SEEK_SET);
-	char buf[SECTOR_SIZE] = {0};
-	for(int i = 0; i < number; i++){
-		write(fd, buf, SECTOR_SIZE);
-	}
 }
 
 
