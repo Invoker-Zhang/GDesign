@@ -41,3 +41,66 @@ void clearAll(char *device){
 
 	close(fd);
 }
+
+void displayDBR(char* device){
+	DBR		DBR_sector = {0};
+	int fd;
+	if( (fd = open(device, O_RDONLY)) <0) 
+		err_sys("open error");
+	if( read(fd, &DBR_sector, sizeof(DBR_sector)) < 0)
+		err_sys("read error");
+	disp(DBR_sector.DBR_BPB.BPB_BytePerSec);
+	disp(DBR_sector.DBR_BPB.BPB_SecPerClus);
+	disp(DBR_sector.DBR_BPB.BPB_RsvdSecCnt);
+	disp(DBR_sector.DBR_BPB.BPB_NumFATs);
+	disp(DBR_sector.DBR_BPB.BPB_RootEntCnt);
+	disp(DBR_sector.DBR_BPB.BPB_ToSec16);
+	disp(DBR_sector.DBR_BPB.BPB_Media);
+	disp(DBR_sector.DBR_BPB.BPB_FATSz16);
+	disp(DBR_sector.DBR_BPB.BPB_SecPerTrk);
+	disp(DBR_sector.DBR_BPB.BPB_NumHeads);
+	disp(DBR_sector.DBR_BPB.BPB_HidSec);
+	disp(DBR_sector.DBR_BPB.BPB_ToSec32);
+	disp(DBR_sector.DBR_BPB.BPB_FATSz32);
+	disp(DBR_sector.DBR_BPB.BPB_Flags);
+	disp(DBR_sector.DBR_BPB.BPB_FSVer);
+	disp(DBR_sector.DBR_BPB.BPB_RootClus);
+	disp(DBR_sector.DBR_BPB.BPB_FSIfo);
+	disp(DBR_sector.DBR_BPB.BPB_BkBootSec);
+
+	disp(DBR_sector.DBR_BS.BS_DrvNum);
+	disp(DBR_sector.DBR_BS.BS_BootSig);
+	disp(DBR_sector.DBR_BS.BS_VolId);
+	for(int i = 0; i < 11; i++){
+		printf("%c",DBR_sector.DBR_BS.BS_VolSysType[i]);
+	}
+	printf("\n");
+	for(int i = 0; i < 8; i++){
+		printf("%c",DBR_sector.DBR_BS.BS_FilSysType[i]);
+	}
+	printf("\n");
+	
+
+}
+void displayFSINFO(char* device){
+	DBR		DBR_sector = {0};
+	int fd;
+	if( (fd = open(device, O_RDONLY)) < 0)
+		err_sys("open error");
+	if( read(fd, &DBR_sector, sizeof(DBR_sector)) < 0)
+		err_sys("read error");
+	int fsInfoSecNum = DBR_sector.DBR_BPB.BPB_FSIfo;
+	lseek( fd, fsInfoSecNum*512,SEEK_SET);
+	FSINFO FSINFO_sector = {0};
+	if( read(fd, &FSINFO_sector, sizeof(FSINFO_sector)) < 0)
+		err_sys("read error");
+	disp(FSINFO_sector.FSINFO_Sym);
+	disp(FSINFO_sector.FSINFO_Used);
+	disp(FSINFO_sector.FSINFO_LastClus);
+	disp(FSINFO_sector.FSINFO_SrchEnt);
+	disp16(FSINFO_sector.FSINFO_Sym);
+	disp16(FSINFO_sector.FSINFO_Used);
+	disp16(FSINFO_sector.FSINFO_LastClus);
+	disp16(FSINFO_sector.FSINFO_SrchEnt);
+
+}

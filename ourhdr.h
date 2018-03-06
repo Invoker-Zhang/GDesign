@@ -32,7 +32,7 @@ void	err_sys(const char*, ...);
 
 
 #define disp(x) { printf(""#x": %lld\n",x); }
-#define disp16(x) { printf(""#x": %x\n",x); }
+#define disp16(x) { printf(""#x": 0x%x\n",x); }
 
 typedef unsigned char		uchar;
 typedef unsigned char		uint8;
@@ -57,17 +57,6 @@ typedef unsigned long long	uint64;
 #define INDEX_FILE_SIZE				1 //in cluster
 #define ALLOC_FILE_SIZE				1 //In cluster
 
-/*
-extern uint64	totalSize;			//disk size in byte
-extern uint64	sectorSize;			//sector size
-extern uint64	fatSize;			//fat size int sector
-extern uint64	reservedOff;		//
-extern uint64	fatOff;				//fat offset
-extern uint64	dataOff;			//data offset
-extern uint64	dataSize;			//data size in sector
-extern uint64	cluster_number;
-*/
-
 
 
 #pragma pack (1)
@@ -81,7 +70,7 @@ typedef struct BIOS_PARAMETER_BLOCK{
 	uint8		BPB_Media;	//0xf8: harddisk, 0xf0: softdisk.
 	uint16		BPB_FATSz16;		//sectors per fat
 	uint16		BPB_SecPerTrk;		//sectors per track
-	uint16		BPB_NumHeads;				//head number
+	uint16		BPB_NumHeads;		//head number
 	uint32		BPB_HidSec;		//sectors ahead bootsector
 	uint32		BPB_ToSec32;		//total_sectors 
 	uint32		BPB_FATSz32;		//
@@ -182,6 +171,12 @@ typedef struct{
 	fdt.LowClus = (tempClusNum & 0x0000ffff);	\
 	fdt.FileLength = length;	\
 }
+
+#define ALLOC_FILE_CLUS(folderNum)		(3+folderNum)
+#define INDEX_FILE_CLUS(folderNum,folderIndex,index)\
+	(ALLOC_FILE_CLUS(folderNum) + folderIndex*(VIDEO_FILE_SIZE*VIDEO_FILE_NUM_PER_PACK+INDEX_FILE_SIZE*INDEX_FILE_NUM_PER_FOLDER) + index * INDEX_FILE_SIZE + 1)
+#define VIDEO_FILE_CLUS(folderNum,folderIndex,index) \
+	(INDEX_FILE_CLUS(folderNum,folderIndex,INDEX_FILE_NUM_PER_FOLDER) + VIDEO_FILE_SIZE*index)
 
 extern void format(char* device);
 extern void pre_allocation(char *device);

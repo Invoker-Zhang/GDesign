@@ -2,7 +2,7 @@
 
 
 int main(){
-	format("/dev/sdb1");
-	pre_allocation("/dev/sdb1");
+	format("/dev/sdc1");
+	pre_allocation("/dev/sdc1");
 	return 0;
 }

@@ -69,7 +69,9 @@ void clearSectors(int fd,
 	char buf[SECTOR_SIZE] = {0};
 	for(int i = 0; i < number; i++){
 		write(fd, buf, SECTOR_SIZE);
+		printf("clearing sectors... %d%% completed\r",100*i/number);
 	}
+	printf("clearing sectors finished\n");
 }
 
 void createFile(int fd,
@@ -82,15 +84,32 @@ void createFile(int fd,
 		uint32 PDClus,
 		uchar attri)
 {
-	SHORT_FDT fdt;
+	SHORT_FDT fdt = {0};
+	time_t t;
+	struct tm * curTime = NULL;
+	time(&t);
+	curTime = gmtime(&t);
+
 	if(attri == 0x20){
 		writeFatEntries(fd, fatStart, nextClus, (fileSize - 1) / CLUSTER_SIZE + 1);
 		writeFatEntries(fd, fatBakStart, nextClus, (fileSize - 1)/ CLUSTER_SIZE + 1);
 		fillFDT(fdt, fileName, attri, 0,
-				0,0,0,0,0,0,
-				0,0,0,
+				curTime->tm_sec/2,
+				curTime->tm_min,
+				curTime->tm_hour,
+				curTime->tm_mday,
+				curTime->tm_mon,
+				curTime->tm_year,
+				curTime->tm_mday,
+				curTime->tm_mon,
+				curTime->tm_year,
 				nextClus,
-				0,0,0,0,0,0,
+				curTime->tm_sec/2,
+				curTime->tm_min,
+				curTime->tm_hour,
+				curTime->tm_mday,
+				curTime->tm_mon,
+				curTime->tm_year,
 				fileSize);
 		addFDT(fd, dataStart, PDClus, &fdt);
 	}

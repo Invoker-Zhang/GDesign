@@ -4,6 +4,7 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ALLOC_FILE_CLUS	ourhdr.h	175;"	d
 ALLOC_FILE_SIZE	ourhdr.h	58;"	d
 Attri	ourhdr.h	/^	uchar	Attri;				\/\/Attribution: 0:rdwr ; 1:rdonly ; 10:hide ; 100:system ; 1000:volumn ; 10000:subdir ; 100000:archive ; 0x0f:long fdt.$/;"	m	struct:__anon6
 BIOS_PARAMETER_BLOCK	ourhdr.h	/^typedef struct BIOS_PARAMETER_BLOCK{$/;"	s
@@ -18,7 +19,7 @@ BPB_Flags	ourhdr.h	/^	uint16		BPB_Flags;			\/\/flags$/;"	m	struct:BIOS_PARAMETER
 BPB_HidSec	ourhdr.h	/^	uint32		BPB_HidSec;		\/\/sectors ahead bootsector$/;"	m	struct:BIOS_PARAMETER_BLOCK
 BPB_Media	ourhdr.h	/^	uint8		BPB_Media;	\/\/0xf8: harddisk, 0xf0: softdisk.$/;"	m	struct:BIOS_PARAMETER_BLOCK
 BPB_NumFATs	ourhdr.h	/^	uint8		BPB_NumFATs;		\/\/number of fats$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_NumHeads	ourhdr.h	/^	uint16		BPB_NumHeads;				\/\/head number$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_NumHeads	ourhdr.h	/^	uint16		BPB_NumHeads;		\/\/head number$/;"	m	struct:BIOS_PARAMETER_BLOCK
 BPB_Reserved	ourhdr.h	/^	uint32		BPB_Reserved[3];	\/\/reserved$/;"	m	struct:BIOS_PARAMETER_BLOCK
 BPB_RootClus	ourhdr.h	/^	uint32		BPB_RootClus;		\/\/root cluster number$/;"	m	struct:BIOS_PARAMETER_BLOCK
 BPB_RootEntCnt	ourhdr.h	/^	uint16		BPB_RootEntCnt;		\/\/ 0 in fat32$/;"	m	struct:BIOS_PARAMETER_BLOCK
@@ -61,6 +62,7 @@ FSINFO_Used	ourhdr.h	/^	uint32	FSINFO_Used;			\/\/0x61417272, indicate this sect
 FilName	ourhdr.h	/^	uchar	FilName[11];			\/\/file name, 0x20 if not enough, 8-bit filename and 3-bit extended name$/;"	m	struct:__anon6
 FileLength	ourhdr.h	/^	uint32	FileLength;			\/\/file length$/;"	m	struct:__anon6
 HighClus	ourhdr.h	/^	uint16	HighClus;			\/\/high 16-bit of cluster number$/;"	m	struct:__anon6
+INDEX_FILE_CLUS	ourhdr.h	176;"	d
 INDEX_FILE_NUM_PER_FOLDER	ourhdr.h	56;"	d
 INDEX_FILE_SIZE	ourhdr.h	57;"	d
 LONG_FDT	ourhdr.h	/^}LONG_FDT;$/;"	t	typeref:struct:__anon7
@@ -75,6 +77,7 @@ SECTORS_PER_CLUSTER	ourhdr.h	47;"	d
 SECTOR_SIZE	ourhdr.h	44;"	d
 SHORT_FDT	ourhdr.h	/^}SHORT_FDT;$/;"	t	typeref:struct:__anon6
 TIME	ourhdr.h	/^}TIME;$/;"	t	typeref:struct:__anon5
+VIDEO_FILE_CLUS	ourhdr.h	178;"	d
 VIDEO_FILE_NUM_PER_PACK	ourhdr.h	55;"	d
 VIDEO_FILE_SIZE	ourhdr.h	54;"	d
 __ourhdr_h	ourhdr.h	2;"	d
@@ -90,7 +93,7 @@ err_msg	libs.c	/^void err_msg(const char* fmt, ...){$/;"	f
 err_quit	libs.c	/^void err_quit(const char *fmt, ...){$/;"	f
 err_ret	libs.c	/^void err_ret(const char * fmt, ...){$/;"	f
 err_sys	libs.c	/^void err_sys(const char * fmt, ...){$/;"	f
-fillFDT	ourhdr.h	156;"	d
+fillFDT	ourhdr.h	145;"	d
 format	formatting.c	/^void format(char* device ){$/;"	f
 hour	ourhdr.h	/^	uint16	hour	: 5;			\/\/0-23$/;"	m	struct:__anon5
 main	test.c	/^int main(){$/;"	f

@@ -41,6 +41,7 @@ void format(char* device ){
 	disp(total_size);
 	total_sectors = total_size / sector_size;
 	disp(total_sectors);
+	disp16(total_sectors);
 
 	fat_start		= reserved_sectors;
 	fat_sectors		= 4 * (total_sectors - reserved_sectors)
@@ -58,9 +59,9 @@ void format(char* device ){
 	DBR_sector.DBR_BPB.BPB_RsvdSecCnt = RESERVED_SECTORS;
 	DBR_sector.DBR_BPB.BPB_NumFATs		= FAT_NUMBER;
 	DBR_sector.DBR_BPB.BPB_Media		= 0xf8;
-	//DBR_sector.DBR_BPB.BPB_SecPerTrk		= ??
-	//DBR_sector.DBR_BPB.BPB_NumHeads		= ??
-	//DBR_sector.DBR_BPB.BPB_HidSec			= ??
+	DBR_sector.DBR_BPB.BPB_SecPerTrk		= 0x3f; 
+	DBR_sector.DBR_BPB.BPB_NumHeads		= 0xff; 
+	DBR_sector.DBR_BPB.BPB_HidSec			= 0x800; 
 	DBR_sector.DBR_BPB.BPB_ToSec32		= total_sectors;
 	DBR_sector.DBR_BPB.BPB_FATSz32		= fat_sectors;
 	//DBR_sector.DBR_BPB.BPB_Flags		= ??
@@ -68,12 +69,12 @@ void format(char* device ){
 	DBR_sector.DBR_BPB.BPB_RootClus		= 2;
 	DBR_sector.DBR_BPB.BPB_FSIfo		= 1;
 	DBR_sector.DBR_BPB.BPB_BkBootSec	= 6;
-	//TODO
-	DBR_sector.DBR_BS.BS_FilSysType[0]  = 'F';
-	DBR_sector.DBR_BS.BS_FilSysType[1]	= 'A';
-	DBR_sector.DBR_BS.BS_FilSysType[2]	= 'T';
-	DBR_sector.DBR_BS.BS_FilSysType[3]	= '3';
-	DBR_sector.DBR_BS.BS_FilSysType[4]	= '2';
+
+	DBR_sector.DBR_BS.BS_DrvNum = 128;		//??
+	DBR_sector.DBR_BS.BS_BootSig = 41;		//??
+	DBR_sector.DBR_BS.BS_VolId = 671137093; //??
+	strncpy(DBR_sector.DBR_BS.BS_VolSysType,"NO NAME    ",11);
+	strncpy(DBR_sector.DBR_BS.BS_FilSysType,"FAT32   ",8);
 	DBR_sector.DBR_BootSign[0]			= 0x55;
 	DBR_sector.DBR_BootSign[1]			= 0xAa;
 	
