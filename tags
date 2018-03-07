@@ -4,8 +4,8 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-ALLOC_FILE_CLUS	ourhdr.h	175;"	d
-ALLOC_FILE_SIZE	ourhdr.h	58;"	d
+ALLOC_FILE_CLUS	ourhdr.h	177;"	d
+ALLOC_FILE_SIZE	ourhdr.h	60;"	d
 Attri	ourhdr.h	/^	uchar	Attri;				\/\/Attribution: 0:rdwr ; 1:rdonly ; 10:hide ; 100:system ; 1000:volumn ; 10000:subdir ; 100000:archive ; 0x0f:long fdt.$/;"	m	struct:__anon6
 BIOS_PARAMETER_BLOCK	ourhdr.h	/^typedef struct BIOS_PARAMETER_BLOCK{$/;"	s
 BPB	ourhdr.h	/^}BPB;$/;"	t	typeref:struct:BIOS_PARAMETER_BLOCK
@@ -35,7 +35,7 @@ BS_FilSysType	ourhdr.h	/^	uchar		BS_FilSysType[8];	\/\/fs name$/;"	m	struct:__an
 BS_Reserved1	ourhdr.h	/^	uint8		BS_Reserved1;		\/\/reserved1$/;"	m	struct:__anon1
 BS_VolId	ourhdr.h	/^	uint32		BS_VolId;			\/\/volumn id$/;"	m	struct:__anon1
 BS_VolSysType	ourhdr.h	/^	uchar		BS_VolSysType[11];	\/\/volumn name$/;"	m	struct:__anon1
-CLUSTER_SIZE	ourhdr.h	48;"	d
+CLUSTER_SIZE	ourhdr.h	46;"	d
 ChangeDate	ourhdr.h	/^	DATE	ChangeDate;			\/\/last change date$/;"	m	struct:__anon6
 ChangeTime	ourhdr.h	/^	TIME	ChangeTime;			\/\/last change time$/;"	m	struct:__anon6
 CreateDate	ourhdr.h	/^	DATE	CreateDate;			\/\/create date$/;"	m	struct:__anon6
@@ -49,7 +49,8 @@ DBR_BootSign	ourhdr.h	/^	uchar		DBR_BootSign[2];$/;"	m	struct:__anon2
 DBR_FacCode	ourhdr.h	/^	uchar		DBR_FacCode[8];$/;"	m	struct:__anon2
 DBR_JmpCode	ourhdr.h	/^	uchar		DBR_JmpCode[3];$/;"	m	struct:__anon2
 DIR_MODE	ourhdr.h	24;"	d
-FAT_NUMBER	ourhdr.h	45;"	d
+FAT_ENTRY_SIZE	ourhdr.h	48;"	d
+FAT_NUMBER	ourhdr.h	47;"	d
 FILE_MODE	ourhdr.h	20;"	d
 FSINFO	ourhdr.h	/^}FSINFO;$/;"	t	typeref:struct:__anon3
 FSINFO_EndSign	ourhdr.h	/^	uint32	FSINFO_EndSign;			\/\/0xaa5500$/;"	m	struct:__anon3
@@ -62,24 +63,25 @@ FSINFO_Used	ourhdr.h	/^	uint32	FSINFO_Used;			\/\/0x61417272, indicate this sect
 FilName	ourhdr.h	/^	uchar	FilName[11];			\/\/file name, 0x20 if not enough, 8-bit filename and 3-bit extended name$/;"	m	struct:__anon6
 FileLength	ourhdr.h	/^	uint32	FileLength;			\/\/file length$/;"	m	struct:__anon6
 HighClus	ourhdr.h	/^	uint16	HighClus;			\/\/high 16-bit of cluster number$/;"	m	struct:__anon6
-INDEX_FILE_CLUS	ourhdr.h	176;"	d
-INDEX_FILE_NUM_PER_FOLDER	ourhdr.h	56;"	d
-INDEX_FILE_SIZE	ourhdr.h	57;"	d
+INDEX_FILE_CLUS	ourhdr.h	178;"	d
+INDEX_FILE_NUM_PER_FOLDER	ourhdr.h	58;"	d
+INDEX_FILE_SIZE	ourhdr.h	59;"	d
 LONG_FDT	ourhdr.h	/^}LONG_FDT;$/;"	t	typeref:struct:__anon7
 LastVisitDate	ourhdr.h	/^	DATE	LastVisitDate;		\/\/last visit date$/;"	m	struct:__anon6
 LowClus	ourhdr.h	/^	uint16	LowClus;			\/\/low 16-bit of cluster number$/;"	m	struct:__anon6
 MAXLINE	ourhdr.h	17;"	d
-MIN_FREE_SPACE	ourhdr.h	53;"	d
+MIN_FREE_SPACE	ourhdr.h	55;"	d
 MilliTime	ourhdr.h	/^	uchar	MilliTime;			\/\/10 ms$/;"	m	struct:__anon6
-RESERVED_SECTORS	ourhdr.h	46;"	d
+RESERVED_SECTORS	ourhdr.h	49;"	d
+ROOT_CLUSTERS	ourhdr.h	50;"	d
 Reserved	ourhdr.h	/^	uchar	Reserved;$/;"	m	struct:__anon6
-SECTORS_PER_CLUSTER	ourhdr.h	47;"	d
+SECTORS_PER_CLUSTER	ourhdr.h	45;"	d
 SECTOR_SIZE	ourhdr.h	44;"	d
 SHORT_FDT	ourhdr.h	/^}SHORT_FDT;$/;"	t	typeref:struct:__anon6
 TIME	ourhdr.h	/^}TIME;$/;"	t	typeref:struct:__anon5
-VIDEO_FILE_CLUS	ourhdr.h	178;"	d
-VIDEO_FILE_NUM_PER_PACK	ourhdr.h	55;"	d
-VIDEO_FILE_SIZE	ourhdr.h	54;"	d
+VIDEOS_PER_PACK	ourhdr.h	57;"	d
+VIDEO_CLUS	ourhdr.h	56;"	d
+VIDEO_FILE_CLUS	ourhdr.h	180;"	d
 __ourhdr_h	ourhdr.h	2;"	d
 addFDT	pre_allocation.c	/^void addFDT(int fd, $/;"	f
 clearSectors	libs.c	/^void clearSectors(int fd,$/;"	f
@@ -93,7 +95,7 @@ err_msg	libs.c	/^void err_msg(const char* fmt, ...){$/;"	f
 err_quit	libs.c	/^void err_quit(const char *fmt, ...){$/;"	f
 err_ret	libs.c	/^void err_ret(const char * fmt, ...){$/;"	f
 err_sys	libs.c	/^void err_sys(const char * fmt, ...){$/;"	f
-fillFDT	ourhdr.h	145;"	d
+fillFDT	ourhdr.h	147;"	d
 format	formatting.c	/^void format(char* device ){$/;"	f
 hour	ourhdr.h	/^	uint16	hour	: 5;			\/\/0-23$/;"	m	struct:__anon5
 main	test.c	/^int main(){$/;"	f

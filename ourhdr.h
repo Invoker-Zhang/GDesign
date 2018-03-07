@@ -42,20 +42,22 @@ typedef unsigned long long	uint64;
 
 //macros about disk structure
 #define	SECTOR_SIZE				512
-#define	FAT_NUMBER				2
-#define	RESERVED_SECTORS		32
-#define	SECTORS_PER_CLUSTER		8
+#define	SECTORS_PER_CLUSTER		16	
 #define	CLUSTER_SIZE	(SECTOR_SIZE * SECTORS_PER_CLUSTER)
+#define	FAT_NUMBER				2
+#define FAT_ENTRY_SIZE			4
+#define	RESERVED_SECTORS		32
+#define ROOT_CLUSTERS		1
 
 
 
 //macros about folder structure when it pre-allocates
 #define MIN_FREE_SPACE		(5 * (1 << 30))
-#define VIDEO_FILE_SIZE		((1 << 28) / CLUSTER_SIZE)
-#define VIDEO_FILE_NUM_PER_PACK		10
-#define INDEX_FILE_NUM_PER_FOLDER	2
-#define INDEX_FILE_SIZE				1 //in cluster
-#define ALLOC_FILE_SIZE				1 //In cluster
+#define VIDEO_CLUS		((1 << 28) / CLUSTER_SIZE)
+#define VIDEOS_PER_PACK		10
+#define INDEXS_PER_PACK	2
+#define INDEX_CLUS				1 //in cluster
+#define ALLOC_CLUS				1 //In cluster
 
 
 
@@ -174,9 +176,9 @@ typedef struct{
 
 #define ALLOC_FILE_CLUS(folderNum)		(3+folderNum)
 #define INDEX_FILE_CLUS(folderNum,folderIndex,index)\
-	(ALLOC_FILE_CLUS(folderNum) + folderIndex*(VIDEO_FILE_SIZE*VIDEO_FILE_NUM_PER_PACK+INDEX_FILE_SIZE*INDEX_FILE_NUM_PER_FOLDER) + index * INDEX_FILE_SIZE + 1)
+	(ALLOC_FILE_CLUS(folderNum) + folderIndex*(VIDEO_CLUS*VIDEOS_PER_PACK+INDEX_CLUS*INDEXS_PER_PACK) + index * INDEX_CLUS + 1)
 #define VIDEO_FILE_CLUS(folderNum,folderIndex,index) \
-	(INDEX_FILE_CLUS(folderNum,folderIndex,INDEX_FILE_NUM_PER_FOLDER) + VIDEO_FILE_SIZE*index)
+	(INDEX_FILE_CLUS(folderNum,folderIndex,INDEXS_PER_PACK) + VIDEO_CLUS*index)
 
 extern void format(char* device);
 extern void pre_allocation(char *device);

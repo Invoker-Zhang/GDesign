@@ -20,6 +20,35 @@ void displaySector(char* device, unsigned offset){
 	close(fd);
 }
 
+void displayCluster(char* device, unsigned offset){
+	int fd;
+	DBR		DBR_sector;
+
+	if( (fd = open(device, O_RDONLY)) < 0)	err_sys("open error");
+	if( read(fd, &DBR_sector, sizeof(DBR)) < 0)		err_sys("read error");
+
+	uint32 sector_size = DBR_sector.DBR_BPB.BPB_BytePerSec;
+	uint32 sectors_per_cluster = DBR_sector.DBR_BPB.BPB_SecPerClus;
+	uint32 start_data_sector = DBR_sector.DBR_BPB.BPB_RsvdSecCnt + DBR_sector.DBR_BPB.BPB_NumFATs * DBR_sector.DBR_BPB.BPB_FATSz32;
+	
+	lseek(fd, sector_size * (start_data_sector + offset * sectors_per_cluster), SEEK_SET);
+
+	uint8 buf[sector_size];
+	if( read(fd, buf, sector_size) < 0) err_sys("read error");
+
+	for(int i = 0; i < 32;  i++){
+
+		for(int j = 0; j < 16; j++){
+			printf("%2x ",buf[i*16 + j]);
+		}
+		for(int j = 0; j < 16; j++){
+			printf("%c",buf[i*16+j]);
+		}
+		printf("\n");
+	}
+	close(fd);
+}
+
 #define BUF_SIZE	4096
 void clearAll(char *device){
 	int fd;
@@ -36,8 +65,9 @@ void clearAll(char *device){
 	lseek(fd, 0, SEEK_SET);
 	for(int i = 0; i < blockNum; i++){
 		write(fd, buf, BUF_SIZE);
-		fprintf(stderr,"%d%% completed\n",100 * i / blockNum);
+		fprintf(stderr,"%.2f%% completed\r",100.0 * i / blockNum);
 	}
+	printf("\nfinished\n");
 
 	close(fd);
 }
@@ -49,6 +79,10 @@ void displayDBR(char* device){
 		err_sys("open error");
 	if( read(fd, &DBR_sector, sizeof(DBR_sector)) < 0)
 		err_sys("read error");
+	for(int i = 0; i < 8; i++){
+		printf("%c",DBR_sector.DBR_FacCode[i]);
+	}
+	printf("\n");
 	disp(DBR_sector.DBR_BPB.BPB_BytePerSec);
 	disp(DBR_sector.DBR_BPB.BPB_SecPerClus);
 	disp(DBR_sector.DBR_BPB.BPB_RsvdSecCnt);
