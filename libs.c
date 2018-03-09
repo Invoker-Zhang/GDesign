@@ -62,27 +62,27 @@ static void err_doit(int errnoflag, const char *fmt, va_list ap){
 }
 
 void clearSectors(int fd,
-		uint64 start,
-		uint64 number)
+		uint64_t start,
+		uint64_t number)
 {
-	lseek(fd, start * SECTOR_SIZE, SEEK_SET);
-	char buf[SECTOR_SIZE] = {0};
+	lseek(fd, start * SEC_SZ, SEEK_SET);
+	char buf[SEC_SZ] = {0};
 	for(int i = 0; i < number; i++){
-		write(fd, buf, SECTOR_SIZE);
+		write(fd, buf, SEC_SZ);
 		printf("clearing sectors... %d%% completed\r",100*i/number);
 	}
 	printf("clearing sectors finished\n");
 }
 
 void createFile(int fd,
-		uint64 fatStart, 
-		uint64 fatBakStart,
-		uint64 dataStart,
-		uint32 nextClus, 
-		uint32 fileSize,
+		uint64_t fatStart, 
+		uint64_t fatBakStart,
+		uint64_t dataStart,
+		uint32_t nextClus, 
+		uint32_t fileSize,
 		const char* fileName, 
-		uint32 PDClus,
-		uchar attri)
+		uint32_t PDClus,
+		unsigned char attri)
 {
 	SHORT_FDT fdt = {0};
 	time_t t;
@@ -91,8 +91,8 @@ void createFile(int fd,
 	curTime = gmtime(&t);
 
 	if(attri == 0x20){
-		writeFatEntries(fd, fatStart, nextClus, (fileSize - 1) / CLUSTER_SIZE + 1);
-		writeFatEntries(fd, fatBakStart, nextClus, (fileSize - 1)/ CLUSTER_SIZE + 1);
+		writeFatEntries(fd, fatStart, nextClus, (fileSize - 1) / CLUS_SZ + 1);
+		writeFatEntries(fd, fatBakStart, nextClus, (fileSize - 1)/ CLUS_SZ + 1);
 		fillFDT(fdt, fileName, attri, 0,
 				curTime->tm_sec/2,
 				curTime->tm_min,
