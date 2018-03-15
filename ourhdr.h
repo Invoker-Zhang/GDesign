@@ -18,13 +18,6 @@
 
 #define MAXLINE 4096
 
-/* default file access permissions for new files */
-#define FILE_MODE (S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH)
-
-
-/* default permissions for new directories */
-#define DIR_MODE	(FILE_MODE | S_IXUSR | S_IXGRP | S_IXOTH)
-
 /* Appendix B */
 void	err_dump(const char *, ...);
 void	err_msg(const char *, ...);
@@ -53,17 +46,18 @@ void	err_sys(const char*, ...);
 #define FAT_ENT_SZ			4
 
 #define	RSVD_SECS		32
+#define FAT_START		RSVD_SECS
 
 #define ROOT_CLUSTERS		1
 
 /* constants about folder structure when it pre-allocates */
 
-#define MIN_DSK_SZ	(5 * (1 << 30))
+#define MIN_DSK_SZ	(5 * (1L << 30))
 
-#define VIDEO_SZ	( 1 << 28)
+#define VIDEO_SZ	( 1L << 28)
 #define VIDEO_CLUS	( VIDEO_SZ / CLUS_SZ)
 
-#define VIDEOS_PER_PACK	10
+#define VIDEOS_PER_PACK	10L
 
 #define INDEXS_PER_PACK	2
 
@@ -74,6 +68,9 @@ void	err_sys(const char*, ...);
 
 
 #pragma pack (1)
+
+/* bios parameter block */
+
 typedef struct BIOS_PARAMETER_BLOCK{
 	uint16_t	BPB_BytsPerSec;		/* bytes per sector */
 	uint8_t		BPB_SecPerClus;		/* sectors per cluster */
@@ -96,6 +93,8 @@ typedef struct BIOS_PARAMETER_BLOCK{
 	uint32_t	BPB_Reserved[3];	/* reserved */
 }BPB;
 
+/* externed boot sector */
+
 typedef struct{
 	uint8_t		BS_DrvNum;			/* drive number; */
 	uint8_t		BS_Reserved1;		/* reserved1 */
@@ -104,6 +103,8 @@ typedef struct{
 	unsigned char		BS_VolSysType[11];	/* volumn name */
 	unsigned char		BS_FilSysType[8];	/* fs name */
 }BS;
+
+/* dos boot record .First sector of this partition */
 
 typedef struct{
 	unsigned char		DBR_JmpCode[3]; /* jump code. It will be tested by windows */
@@ -114,6 +115,8 @@ typedef struct{
 	unsigned char		DBR_BootSign[2]; /* 0xaa55 */
 }DBR;
 
+/* file system information sector */
+
 typedef struct{
 	uint32_t	FSINFO_Sym;				/* 0x41615252, indicate this a fsinfo sector */
 	unsigned char	FSINFO_Reserved1[480];	/* not used */
@@ -123,6 +126,8 @@ typedef struct{
 	unsigned char	FSINFO_Reserved2[12];	/* not used */
 	uint32_t	FSINFO_EndSign;			/* 0xaa55 */
 }FSINFO;
+
+/* date and time structure used in fat file system */
 
 typedef struct{
 	uint16_t	day		: 5;			/*  1-31 */
@@ -135,6 +140,10 @@ typedef struct{
 	uint16_t	min		: 6;			/* 0-59 */
 	uint16_t	hour	: 5;			/* 0-23 */
 }TIME;
+
+/* short file directory table.
+ * Because all the file name are fixed and short,
+ * no long fdt is needed. */
 
 typedef struct{
 	unsigned char	FilName[11];		/* file name, 0x20 if not enough, 8-bit filename and 3-bit extended name */
@@ -152,12 +161,14 @@ typedef struct{
 	uint32_t	FileLength;			/* file length */
 }SHORT_FDT;
 
+/* not used as far */
 typedef struct{
 
 }LONG_FDT;
 #pragma pack ()
 
-/* fillFDT is a macro to initialise a SHORT_FDT variable */
+/* fillFDT is a macro to initialise a SHORT_FDT variable.
+ * Parameters are so may. Terrible! */
 
 #define fillFDT(fdt, name, attri, millTime, \
 		creSec, creMin, creHour,creDay,creMonth,creYear, \
@@ -191,35 +202,50 @@ typedef struct{
 
 /* allocInfo file's beginning cluster number
  * folerNum should be a parameter to compute this one */
+
 #define ALLOC_FILE_CLUS(folderNum)		(3+folderNum)
 
 /* Index file's beginning cluster number.
  * folderNum,which foler and which index file should be specified */
+
 #define INDEX_FILE_CLUS(folderNum,folderIndex,index)\
 	(ALLOC_FILE_CLUS(folderNum) + (folderIndex * INDEXS_PER_PACK + index) * INDEX_CLUS + 1)
 
 /* Video file's beginning cluster number.
- * folderNum, which folder and which video file should be specified */
+ * FolderNum, which folder and which video file should be specified */
+
 #define VIDEO_FILE_CLUS(folderNum,folderIndex,index) \
 	(INDEX_FILE_CLUS(folderNum,folderNum,0) + (folderIndex * VIDEOS_PER_PACK + index) * VIDEO_CLUS)
 
 #pragma pack (1)
+
 /* this type describe write position */
+
 typedef struct{
 	uint32_t folder;
 	uint32_t file;
 	uint64_t offset;
 }Pos ;
+
+/* allocation information file's content */
+
 typedef struct{
-	uint32_t folderNum;
-	uint32_t filesPerFolder;
-	uint32_t lastFolderFileNum;
-	Pos		writePos;
+			/* static information about allocation */
+	uint32_t folderNum;			/* folder number in this partition */
+	uint32_t filesPerFolder;	/* file number predefined per folder */
+	uint32_t lastFolderFileNum; /* Properly there isn't a exact division.
+								   Last folder contains less files */
+			/* dynamic information */
+	Pos		writePos;			/* This describes where to write.
+								 cyclic written is realised here. */
 }allocfile;
 
 #define pos2off(pos) ((pos.folder * VIDEOS_PER_PACK + pos.file) * VIDEO_CLUS * CLUS_SZ + pos.offset)
+
 #define clus2off(data_start,clus) (SEC_SZ * (data_start + (clus - 2) * SECS_PER_CLUS) )
+
 /* index file contents */
+
 typedef struct{
 	uint64_t fileSize; /* video file size */
 	uint32_t fileNum; /* video file number */
@@ -233,18 +259,6 @@ typedef struct{
 extern void format(char* device);
 extern void pre_allocation(char *device);
 extern void clearSectors(int fd, uint64_t start, uint64_t num);
-extern void createFile(int fd,
-		uint64_t fatStart, 
-		uint64_t fatBakStart,
-		uint64_t dataStart,
-		uint32_t nextClus, 
-		uint32_t fileSize,
-		const char* name, 
-		uint32_t PDClus,
-		unsigned char attri);
-void writeFatEntries(int fd,uint64_t fatStart, uint32_t entryNum, uint32_t clusNum);
-void addFDT(int fd,uint64_t data_start,  uint64_t dirClus, SHORT_FDT* fdt);
-
 void circle_write(int fd, void* buf, size_t size);
 
 

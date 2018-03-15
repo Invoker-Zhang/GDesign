@@ -1,21 +1,40 @@
 #include "ourhdr.h"
 
+static void createFile(int fd,
+		uint64_t fatStart, 
+		uint64_t fatBakStart,
+		uint64_t dataStart,
+		uint32_t nextClus, 
+		uint32_t fileSize,
+		const char* fileName, 
+		uint32_t PDClus,
+		unsigned char attri);
+
+static void writeFatEntries(int fd,
+		uint64_t fatStart, 
+		uint32_t entryNum, 
+		uint32_t clusNum);
+
+static void addFDT(int fd, 
+		uint64_t data_start, 
+		uint64_t firstClus, 
+		SHORT_FDT* fdt);
+
+
+/* pre-allocate files in device.
+ * it should be formatted before. */
 
 void pre_allocation(char *device){
 	int fd;
-	uint64_t sector_size = SEC_SZ;
-	uint64_t sectors_per_cluster = SECS_PER_CLUS;
 	uint64_t total_size;
 	uint64_t total_sectors;
-	uint64_t reserved_sectors = RSVD_SECS;
-	uint64_t fat_start;
 	uint64_t fat_sectors;
 	uint64_t fat_backup_start;
 	uint64_t data_start;
 	uint64_t data_sectors;
 	uint64_t cluster_number;
 
-	if( (fd = open(device, O_RDWR, FILE_MODE)) < 0)	
+	if( (fd = open(device, O_RDWR)) < 0)	
 		err_quit("open error");
 
 	/* compute basic parameters about the disk */
@@ -24,18 +43,17 @@ void pre_allocation(char *device){
 
 	total_sectors = total_size / SEC_SZ;
 
-	fat_start				= RSVD_SECS;
 	fat_sectors	= (total_sectors - RSVD_SECS)  
 		/ (FAT_NUM + SEC_SZ * SECS_PER_CLUS / FAT_ENT_SZ);
-	fat_backup_start = fat_start + fat_sectors;
-	data_start	= fat_start + fat_sectors*FAT_NUM;
+	fat_backup_start = FAT_START + fat_sectors;
+	data_start	= FAT_START + fat_sectors*FAT_NUM;
 	data_sectors = total_sectors - data_start ;
 	cluster_number	= data_sectors / SECS_PER_CLUS ;
 
 	if(data_sectors < MIN_DSK_SZ / SEC_SZ)	
 		err_quit("fail to pre-allocation, there are not enough space");
 
-	/* This variable indicates number of clusters every folder occupied. */
+	/* This variable indicates number of clusters every folder itself occupied. */
 	/* each fdt contains .. and . directory entries. */
 	/* Folder itself need more than one cluster if it has too many items. */
 	uint32_t dirSize = (2 + INDEXS_PER_PACK + VIDEOS_PER_PACK - 1) / 
@@ -52,7 +70,7 @@ void pre_allocation(char *device){
 	if( (cluster_number - ROOT_CLUSTERS - ALLOC_CLUS) % 
 			(INDEXS_PER_PACK * INDEX_CLUS +
 			 VIDEO_CLUS * VIDEOS_PER_PACK + 
-			 dirSize) == 0)			/* clusters can be divided properly, each folder has equal video files */
+			 dirSize) == 0)			/* clusters can be divided exactly, each folder has equal video files */
 	{
 		folderNum = 
 			(cluster_number - ROOT_CLUSTERS - ALLOC_CLUS) / 
@@ -61,7 +79,7 @@ void pre_allocation(char *device){
 			 VIDEO_CLUS * VIDEOS_PER_PACK);
 		lastFolderFileNum = VIDEOS_PER_PACK;
 	}
-	else
+	else /* there are some orphan clusters */
 	{
 		folderNum = 
 			(cluster_number - ROOT_CLUSTERS - ALLOC_CLUS) / 
@@ -83,7 +101,7 @@ void pre_allocation(char *device){
 			data_start,
 			(ROOT_CLUSTERS +folderNum * dirSize) * SECS_PER_CLUS);
 
-	/* write the root directory's first entry(itself) */
+	/* write the root directory's first entry(itself) ie. volumn label */
 	SHORT_FDT rootDir = {0};
 	fillFDT(rootDir, "VIDEO      ", 0x08, 0,
 			0,0,0,0,0,0,
@@ -97,7 +115,7 @@ void pre_allocation(char *device){
 
 	if(folderNum > 100)		
 		err_quit("need too many folders,You should enlarge\
-			VIDEO_CLUS or VIDEOS_PER_PACK");
+			VIDEO_SZ or VIDEOS_PER_PACK");
 
 	SHORT_FDT fdt = {0};
 	char name[12] = "FOLDER     ";
@@ -105,7 +123,7 @@ void pre_allocation(char *device){
 	/* allocate fat entries for folders */
 
 	for(int i = 0; i < folderNum; i++){
-		writeFatEntries(fd, fat_start, nextClus, dirSize);
+		writeFatEntries(fd, FAT_START, nextClus, dirSize);
 		writeFatEntries(fd, fat_backup_start, nextClus, dirSize);
 
 		name[6] = '0' + i / 10;
@@ -133,7 +151,7 @@ void pre_allocation(char *device){
 	/* allocate fat entries for allocInfo file */
 
 	createFile(fd,
-			fat_start,
+			FAT_START,
 			fat_backup_start,
 			data_start,
 			nextClus,
@@ -151,7 +169,7 @@ void pre_allocation(char *device){
 			name[6] = '0' + j % 10;
 			name[5] = '0' + j / 10;
 			createFile(fd,
-					fat_start,
+					FAT_START,
 					fat_backup_start,
 					data_start,
 					nextClus,
@@ -171,7 +189,7 @@ void pre_allocation(char *device){
 				t = t / 10;
 			}
 			createFile(fd,
-					fat_start,
+					FAT_START,
 					fat_backup_start,
 					data_start,
 					nextClus,
@@ -189,7 +207,7 @@ void pre_allocation(char *device){
 			t = t/10;
 		}
 		createFile(fd,
-				fat_start,
+				FAT_START,
 				fat_backup_start,
 				data_start,
 				nextClus,
@@ -235,7 +253,7 @@ void pre_allocation(char *device){
 /* fatStart: sector number of fat start */
 /* entryNum: next cluster number available */
 /* clusNum: number of clusters this file needed */
-void writeFatEntries(int fd,
+static void writeFatEntries(int fd,
 		uint64_t fatStart, 
 		uint32_t entryNum, 
 		uint32_t clusNum)
@@ -256,7 +274,7 @@ void writeFatEntries(int fd,
 /* data_start: sectors number of the beginning of the data area */
 /* firstClus: cluster number of the directory */
 /* fdt: fdt address */
-void addFDT(int fd, 
+static void addFDT(int fd, 
 		uint64_t data_start, 
 		uint64_t firstClus, 
 		SHORT_FDT* fdt)
@@ -273,6 +291,61 @@ void addFDT(int fd,
 	offset -= sizeof(tempFDT);
 	lseek(fd, offset, SEEK_SET);
 	write(fd, fdt, sizeof(SHORT_FDT));
+}
+
+/* createFile: create file in a directory.This need two steps.
+ * First, allocate fat entries for this file.
+ * Second, write file descriptor table.
+ *
+ * fd:			file descriptor of the device
+ * fatStart:	beginning sector of fat
+ * fatBakStart: beginning sector of backup fat
+ * nextClus:	next cluster available
+ * fileSize:	size of file to be allocated
+ * fileName:	file name
+ * PDClus:		parent directory's cluster number
+ * attri:		file attribution */
+
+static void createFile(int fd,
+		uint64_t fatStart, 
+		uint64_t fatBakStart,
+		uint64_t dataStart,
+		uint32_t nextClus, 
+		uint32_t fileSize,
+		const char* fileName, 
+		uint32_t PDClus,
+		unsigned char attri)
+{
+	SHORT_FDT fdt = {0};
+	time_t t;
+	struct tm * curTime = NULL;
+	time(&t);
+	curTime = gmtime(&t);
+
+	if(attri == 0x20 || attri == 0x10){
+		writeFatEntries(fd, fatStart, nextClus, (fileSize - 1) / CLUS_SZ + 1);
+		writeFatEntries(fd, fatBakStart, nextClus, (fileSize - 1)/ CLUS_SZ + 1);
+		fillFDT(fdt, fileName, attri, 0,
+				curTime->tm_sec/2,
+				curTime->tm_min,
+				curTime->tm_hour,
+				curTime->tm_mday,
+				curTime->tm_mon,
+				curTime->tm_year,
+				curTime->tm_mday,
+				curTime->tm_mon,
+				curTime->tm_year - 80, /* tm_year is based on 1900 while year in fdt is based on 1980. */
+				nextClus,
+				curTime->tm_sec/2,
+				curTime->tm_min,
+				curTime->tm_hour,
+				curTime->tm_mday,
+				curTime->tm_mon,
+				curTime->tm_year - 80,
+				(attri == 0x20) ? fileSize : 0);
+		addFDT(fd, dataStart, PDClus, &fdt);
+	}
+	
 }
 
 

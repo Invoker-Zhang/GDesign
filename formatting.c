@@ -1,17 +1,17 @@
 #include "ourhdr.h"
 
+/* format the device.
+ * specifications and define in ourhdr.h. */
+
 void format(char* device ){
 	int fd;
-	uint64_t sector_size = SEC_SZ;
-	uint64_t sectors_per_cluster = SECS_PER_CLUS;
 	uint64_t total_size;
 	uint64_t total_sectors;
-	uint64_t reserved_sectors = RSVD_SECS;
-	uint64_t fat_start;
 	uint64_t fat_sectors;
 	uint64_t data_start;
 	uint64_t data_sectors;
 	uint64_t cluster_number;
+
 	char dummy_boot_code[] = "\x0e"	/* push cs */
     "\x1f"			/* pop ds */
     "\xbe\x5b\x7c"		/* mov si, offset message_txt */
@@ -35,21 +35,19 @@ void format(char* device ){
     "press any key to try again ... \r\n";
 
 
-	if( (fd = open(device, O_RDWR, FILE_MODE)) < 0)		err_quit("open error");
+	if( (fd = open(device, O_RDWR)) < 0)		err_quit("open error");
 
 	/* compute parameters about the disk */
-	disp(sector_size);
 	if( (total_size = lseek(fd, 0, SEEK_END)) < 0 )		err_quit("lseek error");
 
 	disp(total_size);
-	total_sectors = total_size / sector_size;
+	total_sectors = total_size / SEC_SZ;
 	disp(total_sectors);
 	disp16(total_sectors);
 
-	fat_start		= reserved_sectors;
-	fat_sectors		= 4 * (total_sectors - reserved_sectors)
-		/ (4*FAT_NUM + sector_size*sectors_per_cluster);
-	data_start		= fat_start + fat_sectors*FAT_NUM;
+	fat_sectors		= 4 * (total_sectors - RSVD_SECS)
+		/ (4*FAT_NUM + SEC_SZ*SECS_PER_CLUS);
+	data_start		= FAT_START + fat_sectors*FAT_NUM;
 	data_sectors	= total_sectors - data_start -1;
 	cluster_number	= data_sectors / SECS_PER_CLUS ;
 
@@ -66,7 +64,7 @@ void format(char* device ){
 	DBR_sector.DBR_JmpCode[2] = 0x90;
 
 	strncpy(DBR_sector.DBR_FacCode,"cefs    ",8);
-	DBR_sector.DBR_BPB.BPB_BytsPerSec = sector_size;
+	DBR_sector.DBR_BPB.BPB_BytsPerSec = SEC_SZ;
 	DBR_sector.DBR_BPB.BPB_SecPerClus = SECS_PER_CLUS;
 	DBR_sector.DBR_BPB.BPB_RsvdSecCnt = RSVD_SECS;
 	DBR_sector.DBR_BPB.BPB_NumFATs		= FAT_NUM;
@@ -95,7 +93,7 @@ void format(char* device ){
 	
 	lseek(fd, 0, SEEK_SET);
 	write(fd, &DBR_sector, sizeof(DBR_sector) );
-	lseek(fd, 6*sector_size, SEEK_SET);
+	lseek(fd, 6*SEC_SZ, SEEK_SET);
 	write(fd, &DBR_sector, sizeof(DBR_sector));
 
 	/* write fs information in fsinfo sector */
@@ -107,26 +105,28 @@ void format(char* device ){
 	FSINFO_sector.FSINFO_SrchEnt		= 3;
 	FSINFO_sector.FSINFO_EndSign		= 0xaa550000;
 	
-	if( lseek(fd, 1*sector_size, SEEK_SET) < 0 ) 
+	if( lseek(fd, 1*SEC_SZ, SEEK_SET) < 0 ) 
 		err_sys("lseek error");
 	if(write(fd, &FSINFO_sector, sizeof(FSINFO_sector)) < 0)
 		err_sys("write error");
-	lseek(fd, 7*sector_size, SEEK_SET);
+	lseek(fd, 7*SEC_SZ, SEEK_SET);
 	write(fd, &FSINFO_sector, sizeof(FSINFO_sector) );
 
 
 	/* write initial fat entries */
 
 	uint32_t	fat_entry = 0x0ffffff8;
-	lseek(fd, fat_start * sector_size ,SEEK_SET);
+	lseek(fd, FAT_START * SEC_SZ ,SEEK_SET);
 	write(fd, &fat_entry, sizeof(fat_entry) );
 	fat_entry		= 0x0fffffff;
 	write(fd, &fat_entry, sizeof(fat_entry) );
 	fat_entry		= 0x0fffffff;
 	write(fd, &fat_entry, sizeof(fat_entry) );
 
+	/* backup area */
+
 	fat_entry = 0x0ffffff8;
-	lseek(fd, (fat_start + fat_sectors)*sector_size,SEEK_SET);
+	lseek(fd, (FAT_START + fat_sectors)*SEC_SZ,SEEK_SET);
 	write(fd, &fat_entry, sizeof(fat_entry));
 	fat_entry = 0x0fffffff;
 	write(fd, &fat_entry, sizeof(fat_entry));
@@ -137,7 +137,7 @@ void format(char* device ){
 	printf("format successed\n");
 
 	/* todel */
-	disp(fat_start);
+	disp(FAT_START);
 	disp(fat_sectors);
 	disp(data_start);
 	disp(data_sectors);

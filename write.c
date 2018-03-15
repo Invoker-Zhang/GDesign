@@ -65,8 +65,14 @@ void circle_write(int fd, void *buf, size_t size){
 	lseek(fd, clus2off(data_start,ALLOC_FILE_CLUS(folderNum)), SEEK_SET);
 	read(fd, &header, sizeof(header) );
 
+	disp(header.writePos.folder);
+	disp(header.writePos.file);
+	disp(header.writePos.offset);
+
 	uint64_t sum = ((header.folderNum - 1) * VIDEOS_PER_PACK + header.lastFolderFileNum ) * VIDEO_SZ;
-	uint64_t cur = (header.writePos.folder * VIDEOS_PER_PACK + header.writePos.file) * VIDEO_SZ;
+	uint64_t cur = (header.writePos.folder * VIDEOS_PER_PACK + header.writePos.file) * VIDEO_SZ + header.writePos.offset;
+	disp(cur);
+	disp(sum);
 	if(cur + size > sum){
 		lseek(fd, clus2off(data_start, VIDEO_FILE_CLUS(folderNum, 0, 0)) + cur, SEEK_SET);
 		write(fd, buf, sum - cur);

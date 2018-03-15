@@ -75,58 +75,6 @@ void clearSectors(int fd,
 	printf("clearing sectors finished\n");
 }
 
-/* createFile: create file in a directory.This need two steps.First, allocate fat entries for this file.Second, write file descriptor table.
- * fd: file descriptor of the device
- * fatStart: beginning sector of fat
- * fatBakStart: beginning sector of backup fat
- * nextClus: next cluster available
- * fileSize: size of file to be allocated
- * fileName: file name
- * PDClus: parent directory's cluster number
- * attri: file attribution
- */
-void createFile(int fd,
-		uint64_t fatStart, 
-		uint64_t fatBakStart,
-		uint64_t dataStart,
-		uint32_t nextClus, 
-		uint32_t fileSize,
-		const char* fileName, 
-		uint32_t PDClus,
-		unsigned char attri)
-{
-	SHORT_FDT fdt = {0};
-	time_t t;
-	struct tm * curTime = NULL;
-	time(&t);
-	curTime = gmtime(&t);
-
-	if(attri == 0x20){
-		writeFatEntries(fd, fatStart, nextClus, (fileSize - 1) / CLUS_SZ + 1);
-		writeFatEntries(fd, fatBakStart, nextClus, (fileSize - 1)/ CLUS_SZ + 1);
-		fillFDT(fdt, fileName, attri, 0,
-				curTime->tm_sec/2,
-				curTime->tm_min,
-				curTime->tm_hour,
-				curTime->tm_mday,
-				curTime->tm_mon,
-				curTime->tm_year,
-				curTime->tm_mday,
-				curTime->tm_mon,
-				curTime->tm_year,
-				nextClus,
-				curTime->tm_sec/2,
-				curTime->tm_min,
-				curTime->tm_hour,
-				curTime->tm_mday,
-				curTime->tm_mon,
-				curTime->tm_year,
-				fileSize);
-		addFDT(fd, dataStart, PDClus, &fdt);
-	}
-	
-}
-
 #if 0
 void initIndexes(int fd, int folderNum, uint64_t dataStart){
 	uint64_t startSec = dataStart + (INDEX_FILE_CLUS(folderNum, 0, 0) - 2) * SECS_PER_CLUS;
