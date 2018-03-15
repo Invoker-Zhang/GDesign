@@ -71,9 +71,20 @@ void clearSectors(int fd,
 		write(fd, buf, SEC_SZ);
 		printf("clearing sectors... %d%% completed\r",100*i/number);
 	}
+	printf("                                \r");
 	printf("clearing sectors finished\n");
 }
 
+/* createFile: create file in a directory.This need two steps.First, allocate fat entries for this file.Second, write file descriptor table.
+ * fd: file descriptor of the device
+ * fatStart: beginning sector of fat
+ * fatBakStart: beginning sector of backup fat
+ * nextClus: next cluster available
+ * fileSize: size of file to be allocated
+ * fileName: file name
+ * PDClus: parent directory's cluster number
+ * attri: file attribution
+ */
 void createFile(int fd,
 		uint64_t fatStart, 
 		uint64_t fatBakStart,
@@ -115,3 +126,21 @@ void createFile(int fd,
 	}
 	
 }
+
+#if 0
+void initIndexes(int fd, int folderNum, uint64_t dataStart){
+	uint64_t startSec = dataStart + (INDEX_FILE_CLUS(folderNum, 0, 0) - 2) * SECS_PER_CLUS;
+	uint64_t num = folderNum * INDEXS_PER_PACK * INDEX_CLUS * SECS_PER_CLUS;
+	clear(fd, startSec, num);
+	
+	for(int i = 0; i < folderNum - 1; i++){
+		index1_file file1;
+		for(int j =0 ; j < VIDEOS_PER_PACK; j++){
+			file1.entries[j].fileLength = VIDEO_CLUS * CLUS_SZ;
+		}
+		lseek(fd, SEC_SZ*(dataStart+SECS_PER_CLUS*(INDEX_FILE_CLUS(folderNum,i,0) - 2)),SEEK_SET);
+		write(fd, &file1,sizeof(file1));
+	}
+}
+
+#endif

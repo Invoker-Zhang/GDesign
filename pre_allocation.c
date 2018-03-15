@@ -145,9 +145,9 @@ void pre_allocation(char *device){
 
 	/* create video files and index files in each folder */
 	/* allocate fat entries and fill the items in Parent directory */
-	for(int i = 0; i < folderNum - 1; i++){
-		for(int j = 0; j < INDEXS_PER_PACK;j++){
-			strncpy(name, "INDEX      ", 11);
+	strncpy(name, "INDEX      ",11);
+	for(int i = 0; i < folderNum; i++){
+		for(int j = 0; j < INDEXS_PER_PACK; j++){
 			name[6] = '0' + j % 10;
 			name[5] = '0' + j / 10;
 			createFile(fd,
@@ -155,62 +155,48 @@ void pre_allocation(char *device){
 					fat_backup_start,
 					data_start,
 					nextClus,
-					INDEX_CLUS *CLUS_SZ,
+					INDEX_CLUS * CLUS_SZ,
 					name,
 					i + 1 + 2,
 					0x20);
 			nextClus += INDEX_CLUS;
 		}
-		strncpy(name, "CE      MP4", 11);
+	}
+	strncpy(name, "CE      MP4", 11);
+	for(int i = 0; i < folderNum - 1; i++){
 		for(int j = 0; j < VIDEOS_PER_PACK; j++){
 			int t = j;
 			for(int k = 0; k < 6; k++){
 				name[7-k] = '0' + t % 10;
-				t = t/10;
+				t = t / 10;
 			}
 			createFile(fd,
 					fat_start,
 					fat_backup_start,
 					data_start,
 					nextClus,
-					VIDEO_CLUS*CLUS_SZ,
+					VIDEO_CLUS * CLUS_SZ,
 					name,
-					i+1+2,
+					i + 1 + 2,
 					0x20);
 			nextClus += VIDEO_CLUS;
 		}
 	}
-	for(int j = 0; j < INDEXS_PER_PACK;j++){
-		strncpy(name, "INDEX      ", 11);
-		name[6] = '0' + j % 10;
-		name[5] = '0' + j / 10;
-		createFile(fd,
-			fat_start,
-			fat_backup_start,
-			data_start,
-			nextClus,
-			INDEX_CLUS * CLUS_SZ,
-			name,
-			folderNum + 2,
-			0x20);
-		nextClus += INDEX_CLUS;
-	}
-	strncpy(name, "CE      MP4",11);
 	for(int j = 0; j < lastFolderFileNum; j++){
 		int t = j;
-		for(int k = 0; k < 6; k++){
+		for(int k = 0; k < 6; k ++){
 			name[7-k] = '0' + t % 10;
 			t = t/10;
 		}
 		createFile(fd,
-			fat_start,
-			fat_backup_start,
-			data_start,
-			nextClus,
-			VIDEO_CLUS*CLUS_SZ,
-			name,
-			folderNum + 2,
-			0x20);
+				fat_start,
+				fat_backup_start,
+				data_start,
+				nextClus,
+				VIDEO_CLUS*CLUS_SZ,
+				name,
+				folderNum + 2,
+				0x20);
 		nextClus += VIDEO_CLUS;
 	}
 
@@ -229,18 +215,17 @@ void pre_allocation(char *device){
 	lseek(fd, 7*SEC_SZ, SEEK_SET);
 	write(fd, &fsInfoSec, sizeof(fsInfoSec));
 
-#if 0
 
-	/* TODO write allocInfo file. */
+	/*  write allocInfo file. */
 	uint64_t cur = 0;
 	cur = lseek(fd, SEC_SZ*(data_start+SECS_PER_CLUS*(ALLOC_FILE_CLUS(folderNum) - 2)),SEEK_SET);
 	disp(cur);
 	write(fd, &folderNum, sizeof(folderNum));
-	write(fd, &lastFolderFileNum,sizeof(lastFolderFileNum));
 	uint32_t fileNumPerFolder = VIDEOS_PER_PACK;
 	write(fd, &fileNumPerFolder, sizeof(fileNumPerFolder));
+	write(fd, &lastFolderFileNum,sizeof(lastFolderFileNum));
 	
-#endif
+	
 
 	close(fd);
 }
@@ -281,7 +266,7 @@ void addFDT(int fd,
 		(data_start + (firstClus - 2)*SECS_PER_CLUS )
 		* SEC_SZ;
 	lseek(fd,offset, SEEK_SET);
-	do{
+	do{	/* this while may cause too may read syscall */
 		read(fd, &tempFDT, sizeof(tempFDT));
 		offset += sizeof(tempFDT);
 	}while(tempFDT.FilName[0]);

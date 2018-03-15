@@ -33,7 +33,7 @@ void	err_ret(const char*, ...);
 void	err_sys(const char*, ...);
 
 
-#define DEBUG	0
+#define DEBUG	1
 
 #if DEBUG
 	#define disp(x) { printf(""#x": %lld\n",x); }
@@ -60,7 +60,8 @@ void	err_sys(const char*, ...);
 
 #define MIN_DSK_SZ	(5 * (1 << 30))
 
-#define VIDEO_CLUS	((1 << 28) / CLUS_SZ)
+#define VIDEO_SZ	( 1 << 28)
+#define VIDEO_CLUS	( VIDEO_SZ / CLUS_SZ)
 
 #define VIDEOS_PER_PACK	10
 
@@ -195,12 +196,39 @@ typedef struct{
 /* Index file's beginning cluster number.
  * folderNum,which foler and which index file should be specified */
 #define INDEX_FILE_CLUS(folderNum,folderIndex,index)\
-	(ALLOC_FILE_CLUS(folderNum) + folderIndex*(VIDEO_CLUS*VIDEOS_PER_PACK+INDEX_CLUS*INDEXS_PER_PACK) + index * INDEX_CLUS + 1)
+	(ALLOC_FILE_CLUS(folderNum) + (folderIndex * INDEXS_PER_PACK + index) * INDEX_CLUS + 1)
 
 /* Video file's beginning cluster number.
  * folderNum, which folder and which video file should be specified */
 #define VIDEO_FILE_CLUS(folderNum,folderIndex,index) \
-	(INDEX_FILE_CLUS(folderNum,folderIndex,INDEXS_PER_PACK) + VIDEO_CLUS*index)
+	(INDEX_FILE_CLUS(folderNum,folderNum,0) + (folderIndex * VIDEOS_PER_PACK + index) * VIDEO_CLUS)
+
+#pragma pack (1)
+/* this type describe write position */
+typedef struct{
+	uint32_t folder;
+	uint32_t file;
+	uint64_t offset;
+}Pos ;
+typedef struct{
+	uint32_t folderNum;
+	uint32_t filesPerFolder;
+	uint32_t lastFolderFileNum;
+	Pos		writePos;
+}allocfile;
+
+#define pos2off(pos) ((pos.folder * VIDEOS_PER_PACK + pos.file) * VIDEO_CLUS * CLUS_SZ + pos.offset)
+#define clus2off(data_start,clus) (SEC_SZ * (data_start + (clus - 2) * SECS_PER_CLUS) )
+/* index file contents */
+typedef struct{
+	uint64_t fileSize; /* video file size */
+	uint32_t fileNum; /* video file number */
+	uint32_t file;		/* current file to be written */
+	uint32_t offset; /* current offset in the file */
+	uint32_t last32bit; /* last 32 bit of video block */
+	uint32_t crc32; /* crc32 of video block */
+}index_file;
+#pragma pack ()
 
 extern void format(char* device);
 extern void pre_allocation(char *device);
@@ -217,6 +245,7 @@ extern void createFile(int fd,
 void writeFatEntries(int fd,uint64_t fatStart, uint32_t entryNum, uint32_t clusNum);
 void addFDT(int fd,uint64_t data_start,  uint64_t dirClus, SHORT_FDT* fdt);
 
+void circle_write(int fd, void* buf, size_t size);
 
 
 
