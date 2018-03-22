@@ -4,95 +4,101 @@
 !_TAG_PROGRAM_NAME	Exuberant Ctags	//
 !_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
 !_TAG_PROGRAM_VERSION	5.9~svn20110310	//
-ALLOC_CLUS	ourhdr.h	66;"	d
-ALLOC_FILE_CLUS	ourhdr.h	206;"	d
-Attri	ourhdr.h	/^	unsigned char	Attri;				\/*  Attribution: 0:rdwr ; 1:rdonly ; 10:hide ; 100:system ; 1000:volumn ; $/;"	m	struct:__anon6
-BIOS_PARAMETER_BLOCK	ourhdr.h	/^typedef struct BIOS_PARAMETER_BLOCK{$/;"	s
-BPB	ourhdr.h	/^}BPB;$/;"	t	typeref:struct:BIOS_PARAMETER_BLOCK
-BPB_BkBootSec	ourhdr.h	/^	uint16_t	BPB_BkBootSec;		\/* backup of bootsector *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_BytsPerSec	ourhdr.h	/^	uint16_t	BPB_BytsPerSec;		\/* bytes per sector *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_FATSz16	ourhdr.h	/^	uint16_t	BPB_FATSz16;		\/* sectors per fat *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_FATSz32	ourhdr.h	/^	uint32_t	BPB_FATSz32;		\/*  *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_FSIfo	ourhdr.h	/^	uint16_t	BPB_FSIfo;			\/* FSINFO sector number; *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_FSVer	ourhdr.h	/^	uint16_t	BPB_FSVer;			\/* version number *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_Flags	ourhdr.h	/^	uint16_t	BPB_Flags;			\/* flags *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_HidSec	ourhdr.h	/^	uint32_t	BPB_HidSec;		\/* sectors ahead bootsector *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_Media	ourhdr.h	/^	uint8_t		BPB_Media;			\/* 0xf8: harddisk, 0xf0: softdisk *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_NumFATs	ourhdr.h	/^	uint8_t		BPB_NumFATs;		\/* number of fats *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_NumHeads	ourhdr.h	/^	uint16_t	BPB_NumHeads;		\/* head number *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_Reserved	ourhdr.h	/^	uint32_t	BPB_Reserved[3];	\/* reserved *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_RootClus	ourhdr.h	/^	uint32_t	BPB_RootClus;		\/* root cluster number *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_RootEntCnt	ourhdr.h	/^	uint16_t	BPB_RootEntCnt;		\/* 0 in fat32 *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_RsvdSecCnt	ourhdr.h	/^	uint16_t	BPB_RsvdSecCnt; 	\/* number of reserved sectors *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_SecPerClus	ourhdr.h	/^	uint8_t		BPB_SecPerClus;		\/* sectors per cluster *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_SecPerTrk	ourhdr.h	/^	uint16_t	BPB_SecPerTrk;		\/* sectors per track *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_ToSec16	ourhdr.h	/^	uint16_t	BPB_ToSec16;		\/* 0 in fat32 *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BPB_ToSec32	ourhdr.h	/^	uint32_t	BPB_ToSec32;		\/* total_sectors  *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
-BS	ourhdr.h	/^}BS;$/;"	t	typeref:struct:__anon1
-BS_BootSig	ourhdr.h	/^	uint8_t		BS_BootSig;			\/* externed boot signature *\/$/;"	m	struct:__anon1
-BS_DrvNum	ourhdr.h	/^	uint8_t		BS_DrvNum;			\/* drive number; *\/$/;"	m	struct:__anon1
-BS_FilSysType	ourhdr.h	/^	unsigned char		BS_FilSysType[8];	\/* fs name *\/$/;"	m	struct:__anon1
-BS_Reserved1	ourhdr.h	/^	uint8_t		BS_Reserved1;		\/* reserved1 *\/$/;"	m	struct:__anon1
-BS_VolId	ourhdr.h	/^	uint32_t		BS_VolId;			\/* volumn id *\/$/;"	m	struct:__anon1
-BS_VolSysType	ourhdr.h	/^	unsigned char		BS_VolSysType[11];	\/* volumn name *\/$/;"	m	struct:__anon1
-CLUS_SZ	ourhdr.h	43;"	d
-ChangeDate	ourhdr.h	/^	DATE	ChangeDate;			\/* last change date *\/$/;"	m	struct:__anon6
-ChangeTime	ourhdr.h	/^	TIME	ChangeTime;			\/* last change time *\/$/;"	m	struct:__anon6
-CreateDate	ourhdr.h	/^	DATE	CreateDate;			\/* create date *\/$/;"	m	struct:__anon6
-CreateTime	ourhdr.h	/^	TIME	CreateTime;			\/* create time *\/$/;"	m	struct:__anon6
-DATE	ourhdr.h	/^}DATE;$/;"	t	typeref:struct:__anon4
-DBR	ourhdr.h	/^}DBR;$/;"	t	typeref:struct:__anon2
-DBR_BPB	ourhdr.h	/^	BPB			DBR_BPB;$/;"	m	struct:__anon2
-DBR_BS	ourhdr.h	/^	BS			DBR_BS;$/;"	m	struct:__anon2
-DBR_BootCode	ourhdr.h	/^	unsigned char		DBR_BootCode[420]; $/;"	m	struct:__anon2
-DBR_BootSign	ourhdr.h	/^	unsigned char		DBR_BootSign[2]; \/* 0xaa55 *\/$/;"	m	struct:__anon2
-DBR_FacCode	ourhdr.h	/^	unsigned char		DBR_FacCode[8]; \/* This code is free if driver program doesn't check it *\/$/;"	m	struct:__anon2
-DBR_JmpCode	ourhdr.h	/^	unsigned char		DBR_JmpCode[3]; \/* jump code. It will be tested by windows *\/$/;"	m	struct:__anon2
+ALLOC_CLUS	fat32.h	43;"	d
+ALLOC_FILE_CLUS	fat32.h	185;"	d
+Attri	fat32.h	/^	unsigned char	Attri;				\/*  Attribution: 0:rdwr ; 1:rdonly ; 10:hide ; 100:system ; 1000:volumn ; $/;"	m	struct:__anon6
+BIOS_PARAMETER_BLOCK	fat32.h	/^typedef struct BIOS_PARAMETER_BLOCK{$/;"	s
+BOOT_BK_SEC	fat32.h	35;"	d
+BPB	fat32.h	/^}BPB;$/;"	t	typeref:struct:BIOS_PARAMETER_BLOCK
+BPB_BkBootSec	fat32.h	/^	uint16_t	BPB_BkBootSec;		\/* backup of bootsector *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_BytsPerSec	fat32.h	/^	uint16_t	BPB_BytsPerSec;		\/* bytes per sector *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_FATSz16	fat32.h	/^	uint16_t	BPB_FATSz16;		\/* sectors per fat *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_FATSz32	fat32.h	/^	uint32_t	BPB_FATSz32;		\/*  *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_FSIfo	fat32.h	/^	uint16_t	BPB_FSIfo;			\/* FSINFO sector number; *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_FSVer	fat32.h	/^	uint16_t	BPB_FSVer;			\/* version number *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_Flags	fat32.h	/^	uint16_t	BPB_Flags;			\/* flags *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_HidSec	fat32.h	/^	uint32_t	BPB_HidSec;		\/* sectors ahead bootsector *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_Media	fat32.h	/^	uint8_t		BPB_Media;			\/* 0xf8: harddisk, 0xf0: softdisk *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_NumFATs	fat32.h	/^	uint8_t		BPB_NumFATs;		\/* number of fats *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_NumHeads	fat32.h	/^	uint16_t	BPB_NumHeads;		\/* head number *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_Reserved	fat32.h	/^	uint32_t	BPB_Reserved[3];	\/* reserved *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_RootClus	fat32.h	/^	uint32_t	BPB_RootClus;		\/* root cluster number *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_RootEntCnt	fat32.h	/^	uint16_t	BPB_RootEntCnt;		\/* 0 in fat32 *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_RsvdSecCnt	fat32.h	/^	uint16_t	BPB_RsvdSecCnt; 	\/* number of reserved sectors *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_SecPerClus	fat32.h	/^	uint8_t		BPB_SecPerClus;		\/* sectors per cluster *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_SecPerTrk	fat32.h	/^	uint16_t	BPB_SecPerTrk;		\/* sectors per track *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_ToSec16	fat32.h	/^	uint16_t	BPB_ToSec16;		\/* 0 in fat32 *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_ToSec32	fat32.h	/^	uint32_t	BPB_ToSec32;		\/* total_sectors  *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BS	fat32.h	/^}BS;$/;"	t	typeref:struct:__anon1
+BS_BootSig	fat32.h	/^	uint8_t		BS_BootSig;			\/* externed boot signature *\/$/;"	m	struct:__anon1
+BS_DrvNum	fat32.h	/^	uint8_t		BS_DrvNum;			\/* drive number; *\/$/;"	m	struct:__anon1
+BS_FilSysType	fat32.h	/^	unsigned char		BS_FilSysType[8];	\/* fs name *\/$/;"	m	struct:__anon1
+BS_Reserved1	fat32.h	/^	uint8_t		BS_Reserved1;		\/* reserved1 *\/$/;"	m	struct:__anon1
+BS_VolId	fat32.h	/^	uint32_t		BS_VolId;			\/* volumn id *\/$/;"	m	struct:__anon1
+BS_VolSysType	fat32.h	/^	unsigned char		BS_VolSysType[11];	\/* volumn name *\/$/;"	m	struct:__anon1
+CLUS_SZ	fat32.h	24;"	d
+ChangeDate	fat32.h	/^	DATE	ChangeDate;			\/* last change date *\/$/;"	m	struct:__anon6
+ChangeTime	fat32.h	/^	TIME	ChangeTime;			\/* last change time *\/$/;"	m	struct:__anon6
+CreateDate	fat32.h	/^	DATE	CreateDate;			\/* create date *\/$/;"	m	struct:__anon6
+CreateTime	fat32.h	/^	TIME	CreateTime;			\/* create time *\/$/;"	m	struct:__anon6
+DATE	fat32.h	/^}DATE;$/;"	t	typeref:struct:__anon4
+DBR	fat32.h	/^}DBR;$/;"	t	typeref:struct:__anon2
+DBR_BPB	fat32.h	/^	BPB			DBR_BPB;$/;"	m	struct:__anon2
+DBR_BS	fat32.h	/^	BS			DBR_BS;$/;"	m	struct:__anon2
+DBR_BootCode	fat32.h	/^	unsigned char		DBR_BootCode[420]; $/;"	m	struct:__anon2
+DBR_BootSign	fat32.h	/^	unsigned char		DBR_BootSign[2]; \/* 0xaa55 *\/$/;"	m	struct:__anon2
+DBR_FacCode	fat32.h	/^	unsigned char		DBR_FacCode[8]; \/* This code is free if driver program doesn't check it *\/$/;"	m	struct:__anon2
+DBR_JmpCode	fat32.h	/^	unsigned char		DBR_JmpCode[3]; \/* jump code. It will be tested by windows *\/$/;"	m	struct:__anon2
 DEBUG	ourhdr.h	29;"	d
-FAT_ENT_SZ	ourhdr.h	46;"	d
-FAT_NUM	ourhdr.h	45;"	d
-FAT_START	ourhdr.h	49;"	d
-FSINFO	ourhdr.h	/^}FSINFO;$/;"	t	typeref:struct:__anon3
-FSINFO_EndSign	ourhdr.h	/^	uint32_t	FSINFO_EndSign;			\/* 0xaa55 *\/$/;"	m	struct:__anon3
-FSINFO_LastClus	ourhdr.h	/^	uint32_t	FSINFO_LastClus;		\/* number of clusters remained *\/$/;"	m	struct:__anon3
-FSINFO_Reserved1	ourhdr.h	/^	unsigned char	FSINFO_Reserved1[480];	\/* not used *\/$/;"	m	struct:__anon3
-FSINFO_Reserved2	ourhdr.h	/^	unsigned char	FSINFO_Reserved2[12];	\/* not used *\/$/;"	m	struct:__anon3
-FSINFO_SrchEnt	ourhdr.h	/^	uint32_t	FSINFO_SrchEnt;			\/* where to find remained clusters *\/$/;"	m	struct:__anon3
-FSINFO_Sym	ourhdr.h	/^	uint32_t	FSINFO_Sym;				\/* 0x41615252, indicate this a fsinfo sector *\/$/;"	m	struct:__anon3
-FSINFO_Used	ourhdr.h	/^	uint32_t	FSINFO_Used;			\/* 0x61417272, indicate this sector has been used *\/$/;"	m	struct:__anon3
-FilName	ourhdr.h	/^	unsigned char	FilName[11];		\/* file name, 0x20 if not enough, 8-bit filename and 3-bit extended name *\/$/;"	m	struct:__anon6
-FileLength	ourhdr.h	/^	uint32_t	FileLength;			\/* file length *\/$/;"	m	struct:__anon6
-HighClus	ourhdr.h	/^	uint16_t	HighClus;			\/* high 16-bit of cluster number *\/$/;"	m	struct:__anon6
-INDEXS_PER_PACK	ourhdr.h	62;"	d
-INDEX_CLUS	ourhdr.h	64;"	d
-INDEX_FILE_CLUS	ourhdr.h	211;"	d
-LONG_FDT	ourhdr.h	/^}LONG_FDT;$/;"	t	typeref:struct:__anon7
-LastVisitDate	ourhdr.h	/^	DATE	LastVisitDate;		\/* last visit date *\/$/;"	m	struct:__anon6
-LowClus	ourhdr.h	/^	uint16_t	LowClus;			\/* low 16-bit of cluster number *\/$/;"	m	struct:__anon6
+FAT_ENT_END	fat32.h	46;"	d
+FAT_ENT_SZ	fat32.h	27;"	d
+FAT_NUM	fat32.h	26;"	d
+FAT_START	fat32.h	30;"	d
+FSINFO	fat32.h	/^}FSINFO;$/;"	t	typeref:struct:__anon3
+FSINFO_EndSign	fat32.h	/^	uint32_t	FSINFO_EndSign;			\/* 0xaa55 *\/$/;"	m	struct:__anon3
+FSINFO_LastClus	fat32.h	/^	uint32_t	FSINFO_LastClus;		\/* number of clusters remained *\/$/;"	m	struct:__anon3
+FSINFO_Reserved1	fat32.h	/^	unsigned char	FSINFO_Reserved1[480];	\/* not used *\/$/;"	m	struct:__anon3
+FSINFO_Reserved2	fat32.h	/^	unsigned char	FSINFO_Reserved2[12];	\/* not used *\/$/;"	m	struct:__anon3
+FSINFO_SrchEnt	fat32.h	/^	uint32_t	FSINFO_SrchEnt;			\/* where to find remained clusters *\/$/;"	m	struct:__anon3
+FSINFO_Sym	fat32.h	/^	uint32_t	FSINFO_Sym;				\/* 0x41615252, indicate this a fsinfo sector *\/$/;"	m	struct:__anon3
+FSINFO_Used	fat32.h	/^	uint32_t	FSINFO_Used;			\/* 0x61417272, indicate this sector has been used *\/$/;"	m	struct:__anon3
+FS_INFO_BK_SEC	fat32.h	34;"	d
+FS_INFO_SEC	fat32.h	33;"	d
+FilName	fat32.h	/^	unsigned char	FilName[11];		\/* file name, 0x20 if not enough, 8-bit filename and 3-bit extended name *\/$/;"	m	struct:__anon6
+FileLength	fat32.h	/^	uint32_t	FileLength;			\/* file length *\/$/;"	m	struct:__anon6
+HighClus	fat32.h	/^	uint16_t	HighClus;			\/* high 16-bit of cluster number *\/$/;"	m	struct:__anon6
+INDEXS_PER_PACK	ourhdr.h	50;"	d
+INDEX_CLUS	fat32.h	41;"	d
+INDEX_FILE_CLUS	fat32.h	190;"	d
+LONG_FDT	fat32.h	/^}LONG_FDT;$/;"	t	typeref:struct:__anon7
+LastVisitDate	fat32.h	/^	DATE	LastVisitDate;		\/* last visit date *\/$/;"	m	struct:__anon6
+LowClus	fat32.h	/^	uint16_t	LowClus;			\/* low 16-bit of cluster number *\/$/;"	m	struct:__anon6
 MAXLINE	ourhdr.h	19;"	d
-MIN_DSK_SZ	ourhdr.h	55;"	d
-MilliTime	ourhdr.h	/^	unsigned char	MilliTime;			\/* 0.1 ms *\/$/;"	m	struct:__anon6
+MIN_DSK_SZ	ourhdr.h	44;"	d
+MilliTime	fat32.h	/^	unsigned char	MilliTime;			\/* 0.1 ms *\/$/;"	m	struct:__anon6
 Pos	ourhdr.h	/^}Pos ;$/;"	t	typeref:struct:__anon8
-ROOT_CLUSTERS	ourhdr.h	51;"	d
-RSVD_SECS	ourhdr.h	48;"	d
-Reserved	ourhdr.h	/^	unsigned char	Reserved;			\/*  Used in windows Nt *\/$/;"	m	struct:__anon6
-SECS_PER_CLUS	ourhdr.h	42;"	d
+ROOT_CLUSTERS	fat32.h	37;"	d
+ROOT_CLUS_NUM	fat32.h	32;"	d
+RSVD_SECS	fat32.h	29;"	d
+Reserved	fat32.h	/^	unsigned char	Reserved;			\/*  Used in windows Nt *\/$/;"	m	struct:__anon6
+SECS_PER_CLUS	fat32.h	23;"	d
 SEC_SZ	ourhdr.h	41;"	d
-SHORT_FDT	ourhdr.h	/^}SHORT_FDT;$/;"	t	typeref:struct:__anon6
-TIME	ourhdr.h	/^}TIME;$/;"	t	typeref:struct:__anon5
-VIDEOS_PER_PACK	ourhdr.h	60;"	d
-VIDEO_CLUS	ourhdr.h	58;"	d
-VIDEO_FILE_CLUS	ourhdr.h	217;"	d
-VIDEO_SZ	ourhdr.h	57;"	d
+SHORT_FDT	fat32.h	/^}SHORT_FDT;$/;"	t	typeref:struct:__anon6
+TIME	fat32.h	/^}TIME;$/;"	t	typeref:struct:__anon5
+VIDEOS_PER_PACK	ourhdr.h	48;"	d
+VIDEO_CLUS	fat32.h	39;"	d
+VIDEO_FILE_CLUS	fat32.h	196;"	d
+VIDEO_SZ	ourhdr.h	46;"	d
+__fat32_h	fat32.h	2;"	d
 __ourhdr_h	ourhdr.h	2;"	d
 addFDT	pre_allocation.c	/^static void addFDT(int fd, $/;"	f	file:
 allocfile	ourhdr.h	/^}allocfile;$/;"	t	typeref:struct:__anon9
 circle_write	write.c	/^void circle_write(int fd, void *buf, size_t size){$/;"	f
 clearSectors	libs.c	/^void clearSectors(int fd,$/;"	f
-clus2off	ourhdr.h	245;"	d
+clus2off	ourhdr.h	77;"	d
 crc32	ourhdr.h	/^	uint32_t crc32; \/* crc32 of video block *\/$/;"	m	struct:__anon10
 createFile	pre_allocation.c	/^static void createFile(int fd,$/;"	f	file:
-day	ourhdr.h	/^	uint16_t	day		: 5;			\/*  1-31 *\/$/;"	m	struct:__anon4
+day	fat32.h	/^	uint16_t	day		: 5;			\/*  1-31 *\/$/;"	m	struct:__anon4
 disp	ourhdr.h	32;"	d
 disp	ourhdr.h	35;"	d
 disp16	ourhdr.h	33;"	d
@@ -108,23 +114,23 @@ file	ourhdr.h	/^	uint32_t file;$/;"	m	struct:__anon8
 fileNum	ourhdr.h	/^	uint32_t fileNum; \/* video file number *\/$/;"	m	struct:__anon10
 fileSize	ourhdr.h	/^	uint64_t fileSize; \/* video file size *\/$/;"	m	struct:__anon10
 filesPerFolder	ourhdr.h	/^	uint32_t filesPerFolder;	\/* file number predefined per folder *\/$/;"	m	struct:__anon9
-fillFDT	ourhdr.h	173;"	d
+fillFDT	fat32.h	152;"	d
 folder	ourhdr.h	/^	uint32_t folder;$/;"	m	struct:__anon8
 folderNum	ourhdr.h	/^	uint32_t folderNum;			\/* folder number in this partition *\/$/;"	m	struct:__anon9
-format	formatting.c	/^void format(char* device ){$/;"	f
-hour	ourhdr.h	/^	uint16_t	hour	: 5;			\/* 0-23 *\/$/;"	m	struct:__anon5
+format_fat32	formatting.c	/^void format_fat32(char* device ){$/;"	f
+hour	fat32.h	/^	uint16_t	hour	: 5;			\/* 0-23 *\/$/;"	m	struct:__anon5
 index_file	ourhdr.h	/^}index_file;$/;"	t	typeref:struct:__anon10
 last32bit	ourhdr.h	/^	uint32_t last32bit; \/* last 32 bit of video block *\/$/;"	m	struct:__anon10
 lastFolderFileNum	ourhdr.h	/^	uint32_t lastFolderFileNum; \/* Properly there isn't a exact division.$/;"	m	struct:__anon9
 main	test.c	/^int main(){$/;"	f
-min	ourhdr.h	/^	uint16_t	min		: 6;			\/* 0-59 *\/$/;"	m	struct:__anon5
-month	ourhdr.h	/^	uint16_t	month	: 4;			\/*  1-12 *\/$/;"	m	struct:__anon4
+min	fat32.h	/^	uint16_t	min		: 6;			\/* 0-59 *\/$/;"	m	struct:__anon5
+month	fat32.h	/^	uint16_t	month	: 4;			\/*  1-12 *\/$/;"	m	struct:__anon4
 offset	ourhdr.h	/^	uint32_t offset; \/* current offset in the file *\/$/;"	m	struct:__anon10
 offset	ourhdr.h	/^	uint64_t offset;$/;"	m	struct:__anon8
 pname	libs.c	/^char * pname = NULL;$/;"	v
-pos2off	ourhdr.h	243;"	d
-pre_allocation	pre_allocation.c	/^void pre_allocation(char *device){$/;"	f
-two_sec	ourhdr.h	/^	uint16_t	two_sec : 5;			\/* 0-29, indicate 0-58 seconds *\/$/;"	m	struct:__anon5
+pos2off	ourhdr.h	75;"	d
+pre_allocation_fat32	pre_allocation.c	/^void pre_allocation_fat32(char *device){$/;"	f
+two_sec	fat32.h	/^	uint16_t	two_sec : 5;			\/* 0-29, indicate 0-58 seconds *\/$/;"	m	struct:__anon5
 writeFatEntries	pre_allocation.c	/^static void writeFatEntries(int fd,$/;"	f	file:
 writePos	ourhdr.h	/^	Pos		writePos;			\/* This describes where to write.$/;"	m	struct:__anon9
-year	ourhdr.h	/^	uint16_t	year	: 7;			\/*  0-127, plus 1980 *\/$/;"	m	struct:__anon4
+year	fat32.h	/^	uint16_t	year	: 7;			\/*  0-127, plus 1980 *\/$/;"	m	struct:__anon4

@@ -1,9 +1,10 @@
 #include "ourhdr.h"
+#include "fat32.h"
 
 /* format the device.
  * specifications and define in ourhdr.h. */
 
-void format(char* device ){
+void format_fat32(char* device ){
 	int fd;
 	uint64_t total_size;
 	uint64_t total_sectors;
@@ -37,7 +38,7 @@ void format(char* device ){
 
 	if( (fd = open(device, O_RDWR)) < 0)		err_quit("open error");
 
-	/* compute parameters about the disk */
+	/* calculate parameters about the disk */
 	if( (total_size = lseek(fd, 0, SEEK_END)) < 0 )		err_quit("lseek error");
 
 	disp(total_size);
@@ -45,8 +46,8 @@ void format(char* device ){
 	disp(total_sectors);
 	disp16(total_sectors);
 
-	fat_sectors		= 4 * (total_sectors - RSVD_SECS)
-		/ (4*FAT_NUM + SEC_SZ*SECS_PER_CLUS);
+	fat_sectors		= FAT_ENT_SZ * (total_sectors - RSVD_SECS)
+		/ (FAT_ENT_SZ*FAT_NUM + SEC_SZ*SECS_PER_CLUS);
 	data_start		= FAT_START + fat_sectors*FAT_NUM;
 	data_sectors	= total_sectors - data_start -1;
 	cluster_number	= data_sectors / SECS_PER_CLUS ;
@@ -76,9 +77,9 @@ void format(char* device ){
 	DBR_sector.DBR_BPB.BPB_FATSz32		= fat_sectors;
 	DBR_sector.DBR_BPB.BPB_Flags		= 0; 
 	DBR_sector.DBR_BPB.BPB_FSVer		= 0; 
-	DBR_sector.DBR_BPB.BPB_RootClus		= 2;
-	DBR_sector.DBR_BPB.BPB_FSIfo		= 1;
-	DBR_sector.DBR_BPB.BPB_BkBootSec	= 6;
+	DBR_sector.DBR_BPB.BPB_RootClus		= ROOT_CLUS_NUM;
+	DBR_sector.DBR_BPB.BPB_FSIfo		= FS_INFO_SEC;
+	DBR_sector.DBR_BPB.BPB_BkBootSec	= BOOT_BK_SEC;
 
 	DBR_sector.DBR_BS.BS_DrvNum = 0x80;		
 	DBR_sector.DBR_BS.BS_BootSig = 0x29;		
@@ -105,11 +106,11 @@ void format(char* device ){
 	FSINFO_sector.FSINFO_SrchEnt		= 3;
 	FSINFO_sector.FSINFO_EndSign		= 0xaa550000;
 	
-	if( lseek(fd, 1*SEC_SZ, SEEK_SET) < 0 ) 
+	if( lseek(fd, FS_INFO_SEC *SEC_SZ, SEEK_SET) < 0 ) 
 		err_sys("lseek error");
 	if(write(fd, &FSINFO_sector, sizeof(FSINFO_sector)) < 0)
 		err_sys("write error");
-	lseek(fd, 7*SEC_SZ, SEEK_SET);
+	lseek(fd, FS_INFO_BK_SEC*SEC_SZ, SEEK_SET);
 	write(fd, &FSINFO_sector, sizeof(FSINFO_sector) );
 
 
@@ -118,9 +119,9 @@ void format(char* device ){
 	uint32_t	fat_entry = 0x0ffffff8;
 	lseek(fd, FAT_START * SEC_SZ ,SEEK_SET);
 	write(fd, &fat_entry, sizeof(fat_entry) );
-	fat_entry		= 0x0fffffff;
+	fat_entry		= FAT_ENT_END;
 	write(fd, &fat_entry, sizeof(fat_entry) );
-	fat_entry		= 0x0fffffff;
+	fat_entry		= FAT_ENT_END;
 	write(fd, &fat_entry, sizeof(fat_entry) );
 
 	/* backup area */
@@ -128,9 +129,9 @@ void format(char* device ){
 	fat_entry = 0x0ffffff8;
 	lseek(fd, (FAT_START + fat_sectors)*SEC_SZ,SEEK_SET);
 	write(fd, &fat_entry, sizeof(fat_entry));
-	fat_entry = 0x0fffffff;
+	fat_entry = FAT_ENT_END;
 	write(fd, &fat_entry, sizeof(fat_entry));
-	fat_entry = 0x0fffffff;
+	fat_entry = FAT_ENT_END;
 	write(fd, &fat_entry, sizeof(fat_entry));
 
 	close(fd);

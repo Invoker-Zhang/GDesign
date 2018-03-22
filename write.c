@@ -1,4 +1,5 @@
 #include "ourhdr.h"
+#include "fat32.h"
 
 void circle_write(int fd, void *buf, size_t size){
 	uint64_t sector_size = SEC_SZ;

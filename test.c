@@ -1,9 +1,10 @@
 #include "ourhdr.h"
 
 
+
 int main(){
-//	format("/dev/sdb1");
-//	pre_allocation("/dev/sdb1");
+	format_fat32("/dev/sdb1");
+	pre_allocation_fat32("/dev/sdb1");
 	int fd = open("/dev/sdb1",O_RDWR);
 	int buf[100];
 	long k = 10000000;
