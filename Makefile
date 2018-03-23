@@ -1,4 +1,23 @@
-run:a.out 
+srcdir := src
+hdrdir := src
+objdir := bin
+
+sources := $(addprefix $(srcdir)/, $(filter %.c, $(shell ls $(srcdir)) ))
+headers := $(addprefix $(hdrdir)/, $(filter %.h, $(shell ls $(srcdir) )))
+objects := $(addprefix $(objdir)/, $(patsubst %.c, %.o, $(filter %.c, $(shell ls $(srcdir)))))
+
+run: a.out  clean
 	sudo ./a.out /dev/sdc1
-a.out:ourhdr.h fat32.h formatting.c pre_allocation.c test.c libs.c write.c fat32.c
-	gcc formatting.c pre_allocation.c test.c libs.c write.c fat32.c
+
+tags:
+	ctags *
+
+a.out: $(objects)
+
+$(objects) : $(objdir)/%.o : $(srcdir)/%.c $(headers)
+	gcc -c $< -I $(hdrdir) -o $@
+
+.PHONY: run clean test tags
+
+clean: 
+	@ rm $(objdir)/*.o
