@@ -18,6 +18,18 @@
 
 #include "ourhdr.h"
 
+struct filsys_fat32{
+	const char* device;
+	uint64_t	tot_sz;
+	uint32_t	tot_secs;
+	uint32_t	clus_sz;
+	uint32_t	fat_start;
+	uint32_t	fat_secs;
+	uint32_t	data_start;
+	uint32_t	data_secs;
+	uint32_t	clus_num;
+};
+
 /* constants about fat32 file system. */
 
 #define	SECS_PER_CLUS		16	
@@ -176,17 +188,17 @@ typedef struct{
 	fdt.CreateTime.min = creatime->tm_min;			\
 	fdt.CreateTime.hour = creatime->tm_hour;		\
 	fdt.CreateDate.day  = creatime->tm_mday;		\
-	fdt.CreateDate.month = creatime->tm_mon;		\
+	fdt.CreateDate.month = creatime->tm_mon+1;		\
 	fdt.CreateDate.year = creatime->tm_year-80;		\
 	fdt.LastVisitDate.day = visitime->tm_mday;		\
-	fdt.LastVisitDate.month = visitime->tm_mon;		\
-	fdt.LastVisitDate.year = visitime->tm_year;		\
+	fdt.LastVisitDate.month = visitime->tm_mon+1;	\
+	fdt.LastVisitDate.year = visitime->tm_year-80;	\
 	fdt.HighClus = tempClusNum >> 16;				\
 	fdt.ChangeTime.two_sec =changetime->tm_sec/2;	\
 	fdt.ChangeTime.min = changetime->tm_min;		\
 	fdt.ChangeTime.hour = changetime->tm_hour;		\
 	fdt.ChangeDate.day = changetime->tm_mday;		\
-	fdt.ChangeDate.month = changetime->tm_mon;		\
+	fdt.ChangeDate.month = changetime->tm_mon+1;	\
 	fdt.ChangeDate.year = changetime->tm_year-80;	\
 	fdt.LowClus = (tempClusNum & 0x0000ffff);		\
 	fdt.FileLength = length;						\
@@ -212,6 +224,7 @@ typedef struct{
 #pragma pack (1)
 
 
+int init_struct_fat32(const char* device, struct filsys_fat32* fs_fat);
 
 
 #endif

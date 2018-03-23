@@ -71,24 +71,7 @@ void clearSectors(int fd,
 		write(fd, buf, SEC_SZ);
 		printf("clearing sectors... %d%% completed\r",100*i/number);
 	}
-	printf("                                \r");
-	printf("clearing sectors finished\n");
+	printf("                                        \r");
+	printf("sectors clearing finished\n");
 }
 
-#if 0
-void initIndexes(int fd, int folderNum, uint64_t dataStart){
-	uint64_t startSec = dataStart + (INDEX_FILE_CLUS(folderNum, 0, 0) - 2) * SECS_PER_CLUS;
-	uint64_t num = folderNum * INDEXS_PER_PACK * INDEX_CLUS * SECS_PER_CLUS;
-	clear(fd, startSec, num);
-	
-	for(int i = 0; i < folderNum - 1; i++){
-		index1_file file1;
-		for(int j =0 ; j < VIDEOS_PER_PACK; j++){
-			file1.entries[j].fileLength = VIDEO_CLUS * CLUS_SZ;
-		}
-		lseek(fd, SEC_SZ*(dataStart+SECS_PER_CLUS*(INDEX_FILE_CLUS(folderNum,i,0) - 2)),SEEK_SET);
-		write(fd, &file1,sizeof(file1));
-	}
-}
-
-#endif

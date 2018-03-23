@@ -4,15 +4,8 @@
 /* format the device.
  * specifications and define in ourhdr.h. */
 
-void format_fat32(char* device ){
+void format_fat32(struct filsys_fat32* fs_fat){
 	int fd;
-	uint64_t total_size;
-	uint64_t total_sectors;
-	uint64_t fat_sectors;
-	uint64_t data_start;
-	uint64_t data_sectors;
-	uint64_t cluster_number;
-
 	char dummy_boot_code[] = "\x0e"	/* push cs */
     "\x1f"			/* pop ds */
     "\xbe\x5b\x7c"		/* mov si, offset message_txt */
@@ -35,26 +28,11 @@ void format_fat32(char* device ){
     "This is not a bootable disk.  Please insert a bootable floppy and\r\n"
     "press any key to try again ... \r\n";
 
-
-	if( (fd = open(device, O_RDWR)) < 0)		err_quit("open error");
-
-	/* calculate parameters about the disk */
-	if( (total_size = lseek(fd, 0, SEEK_END)) < 0 )		err_quit("lseek error");
-
-	disp(total_size);
-	total_sectors = total_size / SEC_SZ;
-	disp(total_sectors);
-	disp16(total_sectors);
-
-	fat_sectors		= FAT_ENT_SZ * (total_sectors - RSVD_SECS)
-		/ (FAT_ENT_SZ*FAT_NUM + SEC_SZ*SECS_PER_CLUS);
-	data_start		= FAT_START + fat_sectors*FAT_NUM;
-	data_sectors	= total_sectors - data_start -1;
-	cluster_number	= data_sectors / SECS_PER_CLUS ;
+	if( (fd = open(fs_fat->device, O_RDWR)) < 0)		err_quit("open error");
 
 	/* clear the reserved sectors and fat sectors */
 
-	clearSectors(fd, 0, data_start);
+	clearSectors(fd, 0, fs_fat->data_start);
 
 	/* write DBR sector */
 
@@ -73,8 +51,8 @@ void format_fat32(char* device ){
 	DBR_sector.DBR_BPB.BPB_SecPerTrk	= 0x3f; 
 	DBR_sector.DBR_BPB.BPB_NumHeads		= 0xff; 
 	DBR_sector.DBR_BPB.BPB_HidSec		= 0x800; 
-	DBR_sector.DBR_BPB.BPB_ToSec32		= total_sectors;
-	DBR_sector.DBR_BPB.BPB_FATSz32		= fat_sectors;
+	DBR_sector.DBR_BPB.BPB_ToSec32		= fs_fat->tot_secs;
+	DBR_sector.DBR_BPB.BPB_FATSz32		= fs_fat->fat_secs;
 	DBR_sector.DBR_BPB.BPB_Flags		= 0; 
 	DBR_sector.DBR_BPB.BPB_FSVer		= 0; 
 	DBR_sector.DBR_BPB.BPB_RootClus		= ROOT_CLUS_NUM;
@@ -94,7 +72,7 @@ void format_fat32(char* device ){
 	
 	lseek(fd, 0, SEEK_SET);
 	write(fd, &DBR_sector, sizeof(DBR_sector) );
-	lseek(fd, 6*SEC_SZ, SEEK_SET);
+	lseek(fd, BOOT_BK_SEC*SEC_SZ, SEEK_SET);
 	write(fd, &DBR_sector, sizeof(DBR_sector));
 
 	/* write fs information in fsinfo sector */
@@ -102,7 +80,7 @@ void format_fat32(char* device ){
 	FSINFO	FSINFO_sector = {0};
 	FSINFO_sector.FSINFO_Sym			= 0x41615252;
 	FSINFO_sector.FSINFO_Used			= 0x61417272;
-	FSINFO_sector.FSINFO_LastClus				= cluster_number;
+	FSINFO_sector.FSINFO_LastClus		= fs_fat->clus_num;
 	FSINFO_sector.FSINFO_SrchEnt		= 3;
 	FSINFO_sector.FSINFO_EndSign		= 0xaa550000;
 	
@@ -112,7 +90,6 @@ void format_fat32(char* device ){
 		err_sys("write error");
 	lseek(fd, FS_INFO_BK_SEC*SEC_SZ, SEEK_SET);
 	write(fd, &FSINFO_sector, sizeof(FSINFO_sector) );
-
 
 	/* write initial fat entries */
 
@@ -127,7 +104,7 @@ void format_fat32(char* device ){
 	/* backup area */
 
 	fat_entry = 0x0ffffff8;
-	lseek(fd, (FAT_START + fat_sectors)*SEC_SZ,SEEK_SET);
+	lseek(fd, (FAT_START + fs_fat->fat_secs)*SEC_SZ,SEEK_SET);
 	write(fd, &fat_entry, sizeof(fat_entry));
 	fat_entry = FAT_ENT_END;
 	write(fd, &fat_entry, sizeof(fat_entry));
@@ -139,10 +116,10 @@ void format_fat32(char* device ){
 
 	/* todel */
 	disp(FAT_START);
-	disp(fat_sectors);
-	disp(data_start);
-	disp(data_sectors);
-	disp(cluster_number);
+	disp(fs_fat->fat_secs);
+	disp(fs_fat->data_start);
+	disp(fs_fat->data_secs);
+	disp(fs_fat->clus_num);
 }
 
 
