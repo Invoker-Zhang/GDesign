@@ -69,7 +69,7 @@ void clearSectors(int fd,
 	char buf[SEC_SZ] = {0};
 	for(int i = 0; i < number; i++){
 		write(fd, buf, SEC_SZ);
-		printf("clearing sectors... %d%% completed\r",100*i/number);
+		printf("clearing sectors... %f%% completed\r",100.0*i/number);
 	}
 	printf("                                        \r");
 	printf("sectors clearing finished\n");

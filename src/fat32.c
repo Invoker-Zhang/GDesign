@@ -1,4 +1,5 @@
 #include "fat32.h"
+#include "ourhdr.h"
 
 int init_struct_fat32(const char* device, struct filsys_fat32* fs){
 	int fd;

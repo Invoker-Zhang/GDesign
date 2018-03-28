@@ -27,9 +27,8 @@ void	err_ret(const char*, ...);
 void	err_sys(const char*, ...);
 
 
-#define DEBUG	1
 
-#if DEBUG
+#ifdef DEBUG
 	#define disp(x) { printf(""#x": %lld\n",x); }
 	#define disp16(x) { printf(""#x": 0x%x\n",x); }
 #else
@@ -51,7 +50,7 @@ void	err_sys(const char*, ...);
 #define INDEXS_PER_PACK	2
 
 
-#include "fat32.h"
+
 
 /* this type describe write position */
 
@@ -90,10 +89,16 @@ typedef struct{
 }index_file;
 #pragma pack ()
 
+struct filsys_fat32;
 extern void format_fat32(struct filsys_fat32*);
 extern void pre_allocation_fat32(struct filsys_fat32*);
 extern void clearSectors(int fd, uint64_t start, uint64_t num);
 void circle_write(int fd, void* buf, size_t size);
+
+
+struct filsys_ext2;
+extern void format_ext2(struct filsys_ext2*);
+extern void pre_allocation_ext2(struct filsys_ext2*);
 
 
 

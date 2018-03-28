@@ -7,15 +7,16 @@ headers := $(addprefix $(hdrdir)/, $(filter %.h, $(shell ls $(srcdir) )))
 objects := $(addprefix $(objdir)/, $(patsubst %.c, %.o, $(filter %.c, $(shell ls $(srcdir)))))
 
 run: a.out  clean
-	sudo ./a.out /dev/sdc1
+	sudo ./a.out /dev/sdb1
 
 tags:
-	ctags *
+	ctags src/* 
 
 a.out: $(objects)
+	gcc -g -o a.out $^
 
 $(objects) : $(objdir)/%.o : $(srcdir)/%.c $(headers)
-	gcc -c $< -I $(hdrdir) -o $@
+	gcc -g -c $< -I $(hdrdir) -o $@ -D TEST_EXT2 -DDEBUG
 
 .PHONY: run clean test tags
 
