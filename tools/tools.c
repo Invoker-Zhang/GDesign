@@ -1,5 +1,8 @@
 #include "ourhdr.h"
+#include "ext2.h"
+#include "fat32.h"
 
+/*
 void displaySector(char* device, unsigned offset){
 	int fd;
 	unsigned char x = 0;
@@ -27,13 +30,13 @@ void displayCluster(char* device, unsigned offset){
 	if( (fd = open(device, O_RDONLY)) < 0)	err_sys("open error");
 	if( read(fd, &DBR_sector, sizeof(DBR)) < 0)		err_sys("read error");
 
-	uint32 sector_size = DBR_sector.DBR_BPB.BPB_BytePerSec;
-	uint32 sectors_per_cluster = DBR_sector.DBR_BPB.BPB_SecPerClus;
-	uint32 start_data_sector = DBR_sector.DBR_BPB.BPB_RsvdSecCnt + DBR_sector.DBR_BPB.BPB_NumFATs * DBR_sector.DBR_BPB.BPB_FATSz32;
+	uint32_t sector_size = DBR_sector.DBR_BPB.BPB_BytePerSec;
+	uint32_t sectors_per_cluster = DBR_sector.DBR_BPB.BPB_SecPerClus;
+	uint32_t start_data_sector = DBR_sector.DBR_BPB.BPB_RsvdSecCnt + DBR_sector.DBR_BPB.BPB_NumFATs * DBR_sector.DBR_BPB.BPB_FATSz32;
 	
 	lseek(fd, sector_size * (start_data_sector + offset * sectors_per_cluster), SEEK_SET);
 
-	uint8 buf[sector_size];
+	uint8_t buf[sector_size];
 	if( read(fd, buf, sector_size) < 0) err_sys("read error");
 
 	for(int i = 0; i < 32;  i++){
@@ -137,4 +140,44 @@ void displayFSINFO(char* device){
 	disp16(FSINFO_sector.FSINFO_LastClus);
 	disp16(FSINFO_sector.FSINFO_SrchEnt);
 
+}
+*/
+
+
+void display_super_block(char* device){
+	struct ext2_super_block super;
+	int fd;
+
+	if( (fd = open(device, O_RDONLY)) <0)
+		err_sys("open error");
+	lseek(fd, 1024, SEEK_SET);
+	if (read(fd, &super, sizeof(super)) < 0)
+		err_sys("read error");
+	disp(super.s_inodes_count);
+	disp(super.s_blocks_count);
+	disp(super.s_r_blocks_count);
+	disp(super.s_free_blocks_count);
+	disp(super.s_free_inodes_count);
+	disp(super.s_first_data_block);
+	disp(super.s_log_block_size);
+	disp(super.s_log_cluster_size);
+	disp(super.s_blocks_per_group);
+	disp(super.s_clusters_per_group);
+	disp(super.s_inodes_per_group);
+	disp(super.s_mtime);
+	disp(super.s_wtime);
+	disp(super.s_mnt_count);
+	disp(super.s_max_mnt_count);
+	disp16(super.s_magic);
+	disp(super.s_state);
+	disp(super.s_errors);
+	disp(super.s_min_rev_level);
+	disp(super.s_last_check);
+	disp(super.s_check_interval);
+	disp(super.s_creator_os);
+	disp(super.s_rev_level);
+	disp(super.s_def_resuid);
+	disp(super.s_def_resgid);
+
+	close(fd);
 }

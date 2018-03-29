@@ -3,12 +3,12 @@
 					boot block
 /* ---------------------------------------------------------- */
 	block group 0:		
-					super block
-					group desc
-					block bitmap
-					inode bitmap
-					inode table
-					data blocks
+				|	super block  |  1  
+				|	group desc  |	to calculate
+				|	block bitmap  | 1
+				|	inode bitmap  | 1
+				|	inode table  |	4
+				|	data blocks  |	XX
 	block group 1:
 				...
 	block group k:

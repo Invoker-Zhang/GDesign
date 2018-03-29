@@ -3,19 +3,39 @@
 
 #include "ourhdr.h"
 
-#define EXT2_MAGIC		0XEF53
+#define EXT2_SUPER_MAGIC		0XEF53
 
 /* File system states */
 #define	EXT2_FS_VALID		0X0001		/* Unmount cleanly */
 #define EXT2_FS_ERROR		0X0002		/* Errors detected */
 #define EXT2_FS_ORPHAN		0X0004		/* Orphans being recoverd */
 
+/* actions when error occurs */
 #define EXT2_ERRORS_CONTINUE	1 /* Continue execution */
 #define EXT2_ERRORS_RO			2 /* Remount fs read-only */
 #define EXT2_ERRORS_PANIC		3 /* Panic */
 #define EXT2_ERRORS_DEFAULT		EXT2_ERRORS_CONTINUE  
 
-/* constants relative to data blocks */
+/*  creator os */
+#define EXT2_OS_LINUX			0
+#define EXT2_OS_HURD			1
+#define EXT2_OS_MASIX			2
+#define EXT2_OS_FREEBSD			3
+#define EXT2_OS_LITES			4
+
+/* revision level value */
+#define EXT2_GOOD_OLD_REV		0	/* Revision 0 */
+#define EXT2_DYNAMIC_REV		1	/* Revision 1 with variable inode size,
+									   extended attributes, etc. */
+
+/* default resuid */
+#define EXT2_DEF_RESUID			0
+#define EXT2_DEF_RESGID			0
+
+/* inode size */
+#define EXT2_GOOD_OLD_INODE_SIZE	128
+
+/* constants relative to data blocks, used in inode.i_block[] */
 #define EXT2_NDIR_BLOCKS	12
 #define EXT2_IND_BLOCK		EXT2_NDIR_BLOCKS
 #define EXT2_DIND_BLOCK		(EXT2_IND_BLOCK + 1)
@@ -25,14 +45,15 @@
 struct ext2_super_block{
 	uint32_t s_inodes_count;	/* inode number of filsys */
 	uint32_t s_blocks_count;	/* block number of filsys */
-	uint32_t s_r_blocks_count;	/* number of reserved blocks */
-	uint32_t s_free_blocks_count;	/* number of free blocks(not used) */
+	uint32_t s_r_blocks_count;	/* number of reserved blocks(for super user) */
+	uint32_t s_free_blocks_count;	/* number of free blocks(not used and reserved) */
 	uint32_t s_free_inodes_count;	/* number of free inodes */
 	uint32_t s_first_data_block;	/* first data block */
 	uint32_t s_log_block_size;	/* block size : 1024 * 2^# */
-	uint32_t s_log_cluster_size;	/* cluster size : 1024 * 2^# */
+	uint32_t s_log_frag_size;	/* fragment size : 1024 * 2^#,this feature isn't used. 
+								   Keep it to equal to  block size */
 	uint32_t s_blocks_per_group;	/* blocks per group */
-	uint32_t s_clusters_per_group;	/* clusters per group */
+	uint32_t s_frags_per_group;	/* fragments per group */
 	uint32_t s_inodes_per_group;	/* inodes per group */
 	uint32_t s_mtime;			/* mount time */
 	uint32_t s_wtime;			/* write time */
@@ -107,47 +128,60 @@ struct ext2_group_desc{
 	uint32_t	bg_block_bitmap;	/* Blocks bitmap block */
 	uint32_t	bg_inode_bitmap;	/* Inodes bitmap block */
 	uint32_t	bg_inode_table;		/* Inodes table block */
-	uint16_t	bg_free_blk_cnt;	/* Free block count */
-	uint16_t	bg_free_inod_cnt;	/* Free inode count */
+	uint16_t	bg_free_blocks_count;	/* Free block count */
+	uint16_t	bg_free_inodes_count;	/* Free inode count */
 	uint16_t	bg_used_dirs_cnt;	/* Directories count */
-	uint16_t	bg_flags;
-	uint32_t	bg_exclude_bitmap_lo;	/* Exclude bitmap for snapshots */
-	uint16_t	bg_block_bitmap_csum_lo;	/* crc32(s_uuid+grp_num+bitmap) lsb */
-	uint16_t	bg_inode_bitmap_csum_lo;	/* crc32(s_uuid+grp_num+bitmap) lsb */
-	uint16_t	bg_itable_unused;	/* Unused inodes count */
-	uint16_t	bg_checksum;		/* crc16(s_uuid+group_num+group_desc) */
+	uint16_t	bg_pad;
+	uint32_t	bg_reserved[3];	/* reserved */
 };
 
-/* configurations */
+/* fixed structures */
 
 /* block size */
-#define		LOG_BLK_SZ	3
-#define		BLK_SZ		( 1024UL * 1 << LOG_BLK_SZ )
+#define		LOG_BLK_SZ	2
+#define		BLK_SZ		( 1024UL << LOG_BLK_SZ )	/* block size in byte */
 
-/* group size */
-/* inode */
-#define		INODS_PER_GRP	(BLK_SZ)
+/* the upper limit of blocks per group.Determined by block bitmap size 
+ * 32K */
+#define		BLKS_PER_GRP_UPPER_LIMIT	( 8 * BLK_SZ ) 
 
-/* inner structure of per group */
-#define		SUPERBLK_OFF	0
-#define		SUPERBLK_SZ		1
-#define		BG_DESC_OFF		(SUPERBLK_OFF+SUPERBLK_SZ)
-#define		BG_DESC_SZ		1
-#define		BLK_BITMAP_OFF	(BG_DESC_OFF+BG_DESC_SZ)
-#define		BLK_BITMAP_SZ	1
-#define		INOD_BITMAP_OFF (BLK_BITMAP_SZ+BLK_BITMAP_OFF)
-#define		INOD_BITMAP_SZ	1
-#define		INOD_TBL_OFF	(INOD_BITMAP_OFF+INOD_BITMAP_SZ)
-#define		INOD_TBL_SZ		(INOD_BITMAP_SZ * 128)
+/* blocks per group we set
+ * 32K*/
+#define		BLKS_PER_GRP				BLKS_PER_GRP_UPPER_LIMIT
 
-#define		MAX_GRP_CNT		(BLK_SZ*BG_DESC_SZ/32)
-			// 2^8
-#define		BLKS_PER_GRP	(BLK_SZ*BLK_BITMAP_SZ * 8) 
-			// 2^16
-#define		GRP_SZ		(BLK_SZ * BLKS_PER_GRP)
-			// 2^29
-#define		MAX_DSK_SZ		(MAX_GRP_CNT*GRP_SZ)
-			//2^37 128G
+/* the upper limit of group size in byte.
+ * 128MB */
+#define		GRP_SZ_UPPER_LIMIT			(BLKS_PER_GRP_UPPER_LIMIT * BLK_SZ)
+
+/* group size in byte.
+ * 128MB */
+#define		GRP_SZ						(BLKS_PER_GRP * BLK_SZ)
+
+/* the upper limit of inodes per group.Determined by inode bitmap size.
+ * 32K */
+#define		INODS_PER_GRP_UPPER_LIMIT	(8*BLK_SZ)
+
+/* inodes per group we set. Considering video files won't be too small, 
+ * we set this as small as much to reduce blocks inode table used. */
+#define		INODS_PER_GRP				128U
+
+/* block count inode table occupied
+ * 4 */
+#define		INOD_TBL_BLKS		(INODS_PER_GRP * EXT2_GOOD_OLD_INODE_SIZE / BLK_SZ)
+
+/* The maximum capacity of the ext2 file system.Determined by block size.
+ * (the type of blocks count file is uint32_t)
+ * 16TB */
+#define		FILSYS_SZ_UPPER_LIMIT		(BLK_SZ << 32)
+
+/* As the group size we decided, this value is the maximum count of groups.
+ * Actually, we don't need so many groups.Group descriptors occupy a lot of 
+ * blocks after all.We will calculate this value according to partion size
+ * in init_struct_e2fs.Also, there will be a member called grp_cnt in struct
+ * filsys_ext2.
+ * 128K */
+#define		MAX_GRP_CNT					(FILSYS_SZ_UPPER_LIMIT / GRP_SZ) // max group count: 
+
 
 
 /* Structure of an inode on the disk */
@@ -196,14 +230,37 @@ struct ext2_inode{
 	}osd2; /* os dependent 2 */
 };
 
+/* defined i_mode values */
+							/* file type */
+#define EXT2_S_IFSOCK		0XC000	/* socket */
+#define EXT2_S_IFLNK		0XA000	/* symbolic link */
+#define EXT2_S_IFREG		0X8000	/* regular file */
+#define EXT2_S_IFBLK		0X6000	/* block special file */
+#define EXT2_S_IFDIR		0X4000	/* directory */
+#define EXT2_S_IFCHR		0X2000	/* character special file */
+#define EXT2_S_IFIFO		0X1000	/* fifo */
+							/* process execution user/group override */
+#define EXT2_S_ISUID		0X0800	/* set process uid */
+#define EXT2_S_ISGID		0X0400	/* set process gid */
+#define EXT2_S_ISVTX		0X0200	/* sticky bit */
+							/* access rights */
+#define EXT2_S_IRUSR		0X0100	/* user read */
+#define EXT2_S_IWUSR		0X0080	/* user write */
+#define EXT2_S_IXUSR		0X0040	/* user execute */
+#define EXT2_S_IRGRP		0X0020	/* group read */
+#define EXT2_S_IWGRP		0X0010	/* group write */
+#define EXT2_S_IXGRP		0X0008	/* group execute */
+#define EXT2_S_IROTH		0X0004	/* ohters read */
+#define EXT2_S_IWOTH		0X0002	/* others write */
+#define EXT2_S_IXOTH		0X0001	/* othres execute */
+
 struct filsys_ext2{
 	const char* device;		/* device name */
-	uint64_t	tot_sz;		/* total size of the partition */
-	uint64_t	blk_cnt;	/* total blocks count */
-	uint32_t	grp_cnt;		/* total block group count */
-	uint32_t	tot_inod_cnt;	/* total inode count */
-	uint32_t	inod_blks;	/* blocks count inode table occupied */
-	uint64_t	last_grp_blks;
+	uint64_t	total_size;		/* total size of the partition */
+	uint64_t	block_count;	/* total blocks count */
+	uint32_t	group_count;		/* total block group count */
+	uint32_t	group_desc_blocks;	/* block count group descriptors occupied. */
+	uint32_t	total_inode_count;	/* total inode count */
 };
 
 extern int init_struct_e2fs(const char* device, struct filsys_ext2 *e2fs);

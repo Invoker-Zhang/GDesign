@@ -72,6 +72,5 @@ void clearSectors(int fd,
 		printf("clearing sectors... %f%% completed\r",100.0*i/number);
 	}
 	printf("                                        \r");
-	printf("sectors clearing finished\n");
 }
 

@@ -5,15 +5,15 @@ extern void clearAll(char*);
 extern void displayDBR(char*);
 extern void displayFSINFO(char*);
 extern void displayCluster(char*,unsigned);
+extern void display_super_block(char*);
 
 int main(int argc, char** argv){
 
 
-	if(argc != 3) err_quit("Usage: ./displayCluster device offset\n");
+	if(argc != 2) err_quit("Usage: ./displaySuperBlock device\n");
 
-	int off = atoi(argv[2]);
 
-	displayCluster(argv[1],off);
+	display_super_block(argv[1]);
 
 	return 0;
 }

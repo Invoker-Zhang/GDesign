@@ -1,0 +1,290 @@
+!_TAG_FILE_FORMAT	2	/extended format; --format=1 will not append ;" to lines/
+!_TAG_FILE_SORTED	1	/0=unsorted, 1=sorted, 2=foldcase/
+!_TAG_PROGRAM_AUTHOR	Darren Hiebert	/dhiebert@users.sourceforge.net/
+!_TAG_PROGRAM_NAME	Exuberant Ctags	//
+!_TAG_PROGRAM_URL	http://ctags.sourceforge.net	/official site/
+!_TAG_PROGRAM_VERSION	5.9~svn20110310	//
+ALLOC_CLUS	fat32.h	55;"	d
+ALLOC_FILE_CLUS	fat32.h	210;"	d
+ATTRI_ARCHIVE	fat32.h	67;"	d
+ATTRI_DIR	fat32.h	66;"	d
+ATTRI_HIDDEN	fat32.h	63;"	d
+ATTRI_LONG_NAM	fat32.h	68;"	d
+ATTRI_RDONLY	fat32.h	62;"	d
+ATTRI_SYSTEM	fat32.h	64;"	d
+ATTRI_VOLUME	fat32.h	65;"	d
+Attri	fat32.h	/^	unsigned char	Attri;				\/*  Attribution: 0:rdwr ; 1:rdonly ; 10:hide ; 100:system ; 1000:volumn ; $/;"	m	struct:__anon12
+BIOS_PARAMETER_BLOCK	fat32.h	/^typedef struct BIOS_PARAMETER_BLOCK{$/;"	s
+BLKS_PER_GRP	ext2.h	150;"	d
+BLKS_PER_GRP_UPPER_LIMIT	ext2.h	146;"	d
+BLK_SZ	ext2.h	142;"	d
+BOOT_BK_SEC	fat32.h	47;"	d
+BPB	fat32.h	/^}BPB;$/;"	t	typeref:struct:BIOS_PARAMETER_BLOCK
+BPB_BkBootSec	fat32.h	/^	uint16_t	BPB_BkBootSec;		\/* backup of bootsector *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_BytsPerSec	fat32.h	/^	uint16_t	BPB_BytsPerSec;		\/* bytes per sector *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_FATSz16	fat32.h	/^	uint16_t	BPB_FATSz16;		\/* sectors per fat *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_FATSz32	fat32.h	/^	uint32_t	BPB_FATSz32;		\/*  *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_FSIfo	fat32.h	/^	uint16_t	BPB_FSIfo;			\/* FSINFO sector number; *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_FSVer	fat32.h	/^	uint16_t	BPB_FSVer;			\/* version number *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_Flags	fat32.h	/^	uint16_t	BPB_Flags;			\/* flags *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_HidSec	fat32.h	/^	uint32_t	BPB_HidSec;		\/* sectors ahead bootsector *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_Media	fat32.h	/^	uint8_t		BPB_Media;			\/* 0xf8: harddisk, 0xf0: softdisk *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_NumFATs	fat32.h	/^	uint8_t		BPB_NumFATs;		\/* number of fats *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_NumHeads	fat32.h	/^	uint16_t	BPB_NumHeads;		\/* head number *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_Reserved	fat32.h	/^	uint32_t	BPB_Reserved[3];	\/* reserved *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_RootClus	fat32.h	/^	uint32_t	BPB_RootClus;		\/* root cluster number *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_RootEntCnt	fat32.h	/^	uint16_t	BPB_RootEntCnt;		\/* 0 in fat32 *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_RsvdSecCnt	fat32.h	/^	uint16_t	BPB_RsvdSecCnt; 	\/* number of reserved sectors *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_SecPerClus	fat32.h	/^	uint8_t		BPB_SecPerClus;		\/* sectors per cluster *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_SecPerTrk	fat32.h	/^	uint16_t	BPB_SecPerTrk;		\/* sectors per track *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_ToSec16	fat32.h	/^	uint16_t	BPB_ToSec16;		\/* 0 in fat32 *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BPB_ToSec32	fat32.h	/^	uint32_t	BPB_ToSec32;		\/* total_sectors  *\/$/;"	m	struct:BIOS_PARAMETER_BLOCK
+BS	fat32.h	/^}BS;$/;"	t	typeref:struct:__anon7
+BS_BootSig	fat32.h	/^	uint8_t		BS_BootSig;			\/* externed boot signature *\/$/;"	m	struct:__anon7
+BS_DrvNum	fat32.h	/^	uint8_t		BS_DrvNum;			\/* drive number; *\/$/;"	m	struct:__anon7
+BS_FilSysType	fat32.h	/^	unsigned char		BS_FilSysType[8];	\/* fs name *\/$/;"	m	struct:__anon7
+BS_Reserved1	fat32.h	/^	uint8_t		BS_Reserved1;		\/* reserved1 *\/$/;"	m	struct:__anon7
+BS_VolId	fat32.h	/^	uint32_t		BS_VolId;			\/* volumn id *\/$/;"	m	struct:__anon7
+BS_VolSysType	fat32.h	/^	unsigned char		BS_VolSysType[11];	\/* volumn name *\/$/;"	m	struct:__anon7
+CLUS_SZ	fat32.h	36;"	d
+ChangeDate	fat32.h	/^	DATE	ChangeDate;			\/* last change date *\/$/;"	m	struct:__anon12
+ChangeTime	fat32.h	/^	TIME	ChangeTime;			\/* last change time *\/$/;"	m	struct:__anon12
+CreateDate	fat32.h	/^	DATE	CreateDate;			\/* create date *\/$/;"	m	struct:__anon12
+CreateTime	fat32.h	/^	TIME	CreateTime;			\/* create time *\/$/;"	m	struct:__anon12
+DATE	fat32.h	/^}DATE;$/;"	t	typeref:struct:__anon10
+DBR	fat32.h	/^}DBR;$/;"	t	typeref:struct:__anon8
+DBR_BPB	fat32.h	/^	BPB			DBR_BPB;$/;"	m	struct:__anon8
+DBR_BS	fat32.h	/^	BS			DBR_BS;$/;"	m	struct:__anon8
+DBR_BootCode	fat32.h	/^	unsigned char		DBR_BootCode[420]; $/;"	m	struct:__anon8
+DBR_BootSign	fat32.h	/^	unsigned char		DBR_BootSign[2]; \/* 0xaa55 *\/$/;"	m	struct:__anon8
+DBR_FacCode	fat32.h	/^	unsigned char		DBR_FacCode[8]; \/* This code is free if driver program doesn't check it *\/$/;"	m	struct:__anon8
+DBR_JmpCode	fat32.h	/^	unsigned char		DBR_JmpCode[3]; \/* jump code. It will be tested by windows *\/$/;"	m	struct:__anon8
+EXT2_DEF_RESGID	ext2.h	33;"	d
+EXT2_DEF_RESUID	ext2.h	32;"	d
+EXT2_DIND_BLOCK	ext2.h	41;"	d
+EXT2_DYNAMIC_REV	ext2.h	28;"	d
+EXT2_ERRORS_CONTINUE	ext2.h	14;"	d
+EXT2_ERRORS_DEFAULT	ext2.h	17;"	d
+EXT2_ERRORS_PANIC	ext2.h	16;"	d
+EXT2_ERRORS_RO	ext2.h	15;"	d
+EXT2_FS_ERROR	ext2.h	10;"	d
+EXT2_FS_ORPHAN	ext2.h	11;"	d
+EXT2_FS_VALID	ext2.h	9;"	d
+EXT2_GOOD_OLD_INODE_SIZE	ext2.h	36;"	d
+EXT2_GOOD_OLD_REV	ext2.h	27;"	d
+EXT2_IND_BLOCK	ext2.h	40;"	d
+EXT2_NDIR_BLOCKS	ext2.h	39;"	d
+EXT2_N_BLOCKS	ext2.h	43;"	d
+EXT2_OS_FREEBSD	ext2.h	23;"	d
+EXT2_OS_HURD	ext2.h	21;"	d
+EXT2_OS_LINUX	ext2.h	20;"	d
+EXT2_OS_LITES	ext2.h	24;"	d
+EXT2_OS_MASIX	ext2.h	22;"	d
+EXT2_SUPER_MAGIC	ext2.h	6;"	d
+EXT2_S_IFBLK	ext2.h	238;"	d
+EXT2_S_IFCHR	ext2.h	240;"	d
+EXT2_S_IFDIR	ext2.h	239;"	d
+EXT2_S_IFIFO	ext2.h	241;"	d
+EXT2_S_IFLNK	ext2.h	236;"	d
+EXT2_S_IFREG	ext2.h	237;"	d
+EXT2_S_IFSOCK	ext2.h	235;"	d
+EXT2_S_IRGRP	ext2.h	250;"	d
+EXT2_S_IROTH	ext2.h	253;"	d
+EXT2_S_IRUSR	ext2.h	247;"	d
+EXT2_S_ISGID	ext2.h	244;"	d
+EXT2_S_ISUID	ext2.h	243;"	d
+EXT2_S_ISVTX	ext2.h	245;"	d
+EXT2_S_IWGRP	ext2.h	251;"	d
+EXT2_S_IWOTH	ext2.h	254;"	d
+EXT2_S_IWUSR	ext2.h	248;"	d
+EXT2_S_IXGRP	ext2.h	252;"	d
+EXT2_S_IXOTH	ext2.h	255;"	d
+EXT2_S_IXUSR	ext2.h	249;"	d
+EXT2_TIND_BLOCK	ext2.h	42;"	d
+FAT_ENT_END	fat32.h	58;"	d
+FAT_ENT_SZ	fat32.h	39;"	d
+FAT_NUM	fat32.h	38;"	d
+FAT_START	fat32.h	42;"	d
+FILSYS_SZ_UPPER_LIMIT	ext2.h	175;"	d
+FSINFO	fat32.h	/^}FSINFO;$/;"	t	typeref:struct:__anon9
+FSINFO_EndSign	fat32.h	/^	uint32_t	FSINFO_EndSign;			\/* 0xaa55 *\/$/;"	m	struct:__anon9
+FSINFO_LastClus	fat32.h	/^	uint32_t	FSINFO_LastClus;		\/* number of clusters remained *\/$/;"	m	struct:__anon9
+FSINFO_Reserved1	fat32.h	/^	unsigned char	FSINFO_Reserved1[480];	\/* not used *\/$/;"	m	struct:__anon9
+FSINFO_Reserved2	fat32.h	/^	unsigned char	FSINFO_Reserved2[12];	\/* not used *\/$/;"	m	struct:__anon9
+FSINFO_SrchEnt	fat32.h	/^	uint32_t	FSINFO_SrchEnt;			\/* where to find remained clusters *\/$/;"	m	struct:__anon9
+FSINFO_Sym	fat32.h	/^	uint32_t	FSINFO_Sym;				\/* 0x41615252, indicate this a fsinfo sector *\/$/;"	m	struct:__anon9
+FSINFO_Used	fat32.h	/^	uint32_t	FSINFO_Used;			\/* 0x61417272, indicate this sector has been used *\/$/;"	m	struct:__anon9
+FS_INFO_BK_SEC	fat32.h	46;"	d
+FS_INFO_SEC	fat32.h	45;"	d
+FilName	fat32.h	/^	unsigned char	FilName[11];		\/* file name, 0x20 if not enough, 8-bit filename and 3-bit extended name *\/$/;"	m	struct:__anon12
+FileLength	fat32.h	/^	uint32_t	FileLength;			\/* file length *\/$/;"	m	struct:__anon12
+GRP_SZ	ext2.h	158;"	d
+GRP_SZ_UPPER_LIMIT	ext2.h	154;"	d
+HighClus	fat32.h	/^	uint16_t	HighClus;			\/* high 16-bit of cluster number *\/$/;"	m	struct:__anon12
+INDEXS_PER_PACK	ourhdr.h	50;"	d
+INDEX_CLUS	fat32.h	53;"	d
+INDEX_FILE_CLUS	fat32.h	215;"	d
+INODS_PER_GRP	ext2.h	166;"	d
+INODS_PER_GRP_UPPER_LIMIT	ext2.h	162;"	d
+INOD_TBL_BLKS	ext2.h	170;"	d
+LOG_BLK_SZ	ext2.h	141;"	d
+LONG_FDT	fat32.h	/^}LONG_FDT;$/;"	t	typeref:struct:__anon13
+LastVisitDate	fat32.h	/^	DATE	LastVisitDate;		\/* last visit date *\/$/;"	m	struct:__anon12
+LowClus	fat32.h	/^	uint16_t	LowClus;			\/* low 16-bit of cluster number *\/$/;"	m	struct:__anon12
+MAXLINE	ourhdr.h	20;"	d
+MAX_GRP_CNT	ext2.h	183;"	d
+MIN_DSK_SZ	ourhdr.h	44;"	d
+MilliTime	fat32.h	/^	unsigned char	MilliTime;			\/* 0.1 ms *\/$/;"	m	struct:__anon12
+Pos	ourhdr.h	/^}Pos ;$/;"	t	typeref:struct:__anon14
+ROOT_CLUSTERS	fat32.h	49;"	d
+ROOT_CLUS_NUM	fat32.h	44;"	d
+RSVD_SECS	fat32.h	41;"	d
+Reserved	fat32.h	/^	unsigned char	Reserved;			\/*  Used in windows Nt *\/$/;"	m	struct:__anon12
+SECS_PER_CLUS	fat32.h	35;"	d
+SEC_SZ	ourhdr.h	41;"	d
+SHORT_FDT	fat32.h	/^}SHORT_FDT;$/;"	t	typeref:struct:__anon12
+TIME	fat32.h	/^}TIME;$/;"	t	typeref:struct:__anon11
+VIDEOS_PER_PACK	ourhdr.h	48;"	d
+VIDEO_CLUS	fat32.h	51;"	d
+VIDEO_FILE_CLUS	fat32.h	221;"	d
+VIDEO_SZ	ourhdr.h	46;"	d
+__ext2_h	ext2.h	2;"	d
+__fat32_h	fat32.h	2;"	d
+__ourhdr_h	ourhdr.h	2;"	d
+addFDT	pre_allocation.c	/^static void addFDT(struct filsys_fat32*fs, uint64_t firstClus, SHORT_FDT* fdt)$/;"	f	file:
+allocfile	ourhdr.h	/^}allocfile;$/;"	t	typeref:struct:__anon15
+bg_block_bitmap	ext2.h	/^	uint32_t	bg_block_bitmap;	\/* Blocks bitmap block *\/$/;"	m	struct:ext2_group_desc
+bg_free_blocks_count	ext2.h	/^	uint16_t	bg_free_blocks_count;	\/* Free block count *\/$/;"	m	struct:ext2_group_desc
+bg_free_inodes_count	ext2.h	/^	uint16_t	bg_free_inodes_count;	\/* Free inode count *\/$/;"	m	struct:ext2_group_desc
+bg_inode_bitmap	ext2.h	/^	uint32_t	bg_inode_bitmap;	\/* Inodes bitmap block *\/$/;"	m	struct:ext2_group_desc
+bg_inode_table	ext2.h	/^	uint32_t	bg_inode_table;		\/* Inodes table block *\/$/;"	m	struct:ext2_group_desc
+bg_pad	ext2.h	/^	uint16_t	bg_pad;$/;"	m	struct:ext2_group_desc
+bg_reserved	ext2.h	/^	uint32_t	bg_reserved[3];	\/* reserved *\/$/;"	m	struct:ext2_group_desc
+bg_used_dirs_cnt	ext2.h	/^	uint16_t	bg_used_dirs_cnt;	\/* Directories count *\/$/;"	m	struct:ext2_group_desc
+blk_cnt	ext2.h	/^	uint64_t	blk_cnt;	\/* total blocks count *\/$/;"	m	struct:filsys_ext2
+circle_write	write.c	/^void circle_write(int fd, void *buf, size_t size){$/;"	f
+clearSectors	libs.c	/^void clearSectors(int fd,$/;"	f
+clus2off	ourhdr.h	78;"	d
+clus_num	fat32.h	/^	uint32_t	clus_num;$/;"	m	struct:filsys_fat32
+clus_sz	fat32.h	/^	uint32_t	clus_sz;$/;"	m	struct:filsys_fat32
+crc32	ourhdr.h	/^	uint32_t crc32; \/* crc32 of video block *\/$/;"	m	struct:__anon16
+createFile	pre_allocation.c	/^static void createFile(struct filsys_fat32* fs, uint32_t nextClus, $/;"	f	file:
+data_secs	fat32.h	/^	uint32_t	data_secs;$/;"	m	struct:filsys_fat32
+data_start	fat32.h	/^	uint32_t	data_start;$/;"	m	struct:filsys_fat32
+day	fat32.h	/^	uint16_t	day		: 5;			\/*  1-31 *\/$/;"	m	struct:__anon10
+device	ext2.h	/^	const char* device;		\/* device name *\/$/;"	m	struct:filsys_ext2
+device	fat32.h	/^	const char* device;$/;"	m	struct:filsys_fat32
+disp	ourhdr.h	32;"	d
+disp	ourhdr.h	35;"	d
+disp16	ourhdr.h	33;"	d
+disp16	ourhdr.h	36;"	d
+err_doit	libs.c	/^static void err_doit(int errnoflag, const char *fmt, va_list ap){$/;"	f	file:
+err_dump	libs.c	/^void err_dump(const char* fmt, ...){$/;"	f
+err_msg	libs.c	/^void err_msg(const char* fmt, ...){$/;"	f
+err_quit	libs.c	/^void err_quit(const char *fmt, ...){$/;"	f
+err_ret	libs.c	/^void err_ret(const char * fmt, ...){$/;"	f
+err_sys	libs.c	/^void err_sys(const char * fmt, ...){$/;"	f
+ext2_group_desc	ext2.h	/^struct ext2_group_desc{$/;"	s
+ext2_inode	ext2.h	/^struct ext2_inode{$/;"	s
+ext2_super_block	ext2.h	/^struct ext2_super_block{$/;"	s
+fat_secs	fat32.h	/^	uint32_t	fat_secs;$/;"	m	struct:filsys_fat32
+fat_start	fat32.h	/^	uint32_t	fat_start;$/;"	m	struct:filsys_fat32
+fd	pre_allocation.c	/^static int		fd;$/;"	v	file:
+file	ourhdr.h	/^	uint32_t file;		\/* current file to be written *\/$/;"	m	struct:__anon16
+file	ourhdr.h	/^	uint32_t file;$/;"	m	struct:__anon14
+fileNum	ourhdr.h	/^	uint32_t fileNum; \/* video file number *\/$/;"	m	struct:__anon16
+fileSize	ourhdr.h	/^	uint64_t fileSize; \/* video file size *\/$/;"	m	struct:__anon16
+filesPerFolder	ourhdr.h	/^	uint32_t filesPerFolder;	\/* file number predefined per folder *\/$/;"	m	struct:__anon15
+fillFDT	fat32.h	176;"	d
+filsys_ext2	ext2.h	/^struct filsys_ext2{$/;"	s
+filsys_fat32	fat32.h	/^struct filsys_fat32{$/;"	s
+folder	ourhdr.h	/^	uint32_t folder;$/;"	m	struct:__anon14
+folderNum	ourhdr.h	/^	uint32_t folderNum;			\/* folder number in this partition *\/$/;"	m	struct:__anon15
+format_ext2	formatting.c	/^void format_ext2(struct filsys_ext2 * e2fs){$/;"	f
+format_fat32	formatting.c	/^void format_fat32(struct filsys_fat32* fs_fat){$/;"	f
+grp_cnt	ext2.h	/^	uint32_t	grp_cnt;		\/* total block group count *\/$/;"	m	struct:filsys_ext2
+grp_desc_blks	ext2.h	/^	uint32_t	grp_desc_blks;	\/* block count group descriptors occupied. *\/$/;"	m	struct:filsys_ext2
+h_i_author	ext2.h	/^			uint32_t h_i_author;$/;"	m	struct:ext2_inode::__anon4::__anon6
+h_i_frag	ext2.h	/^			uint8_t h_i_frag;$/;"	m	struct:ext2_inode::__anon4::__anon6
+h_i_fsize	ext2.h	/^			uint8_t h_i_fsize;$/;"	m	struct:ext2_inode::__anon4::__anon6
+h_i_gid_high	ext2.h	/^			uint16_t h_i_gid_high;$/;"	m	struct:ext2_inode::__anon4::__anon6
+h_i_mode_high	ext2.h	/^			uint16_t h_i_mode_high;$/;"	m	struct:ext2_inode::__anon4::__anon6
+h_i_translator	ext2.h	/^			uint32_t h_i_translator;$/;"	m	struct:ext2_inode::__anon1::__anon3
+h_i_uid_high	ext2.h	/^			uint16_t h_i_uid_high;$/;"	m	struct:ext2_inode::__anon4::__anon6
+hour	fat32.h	/^	uint16_t	hour	: 5;			\/* 0-23 *\/$/;"	m	struct:__anon11
+hurd1	ext2.h	/^		}hurd1;$/;"	m	union:ext2_inode::__anon1	typeref:struct:ext2_inode::__anon1::__anon3
+hurd2	ext2.h	/^		}hurd2;$/;"	m	union:ext2_inode::__anon4	typeref:struct:ext2_inode::__anon4::__anon6
+i_atime	ext2.h	/^	uint32_t i_atime;	\/* access time *\/$/;"	m	struct:ext2_inode
+i_block	ext2.h	/^	uint32_t i_block[EXT2_N_BLOCKS]; \/* Pointers to blocks *\/$/;"	m	struct:ext2_inode
+i_blocks	ext2.h	/^	uint32_t i_blocks;	\/* blocks count *\/$/;"	m	struct:ext2_inode
+i_ctime	ext2.h	/^	uint32_t i_ctime;	\/* inode change time *\/$/;"	m	struct:ext2_inode
+i_dtime	ext2.h	/^	uint32_t i_dtime;	\/* deletion time *\/$/;"	m	struct:ext2_inode
+i_faddr	ext2.h	/^	uint32_t i_faddr;			\/* fragment addr *\/$/;"	m	struct:ext2_inode
+i_file_acl	ext2.h	/^	uint32_t i_file_acl;		\/* file ACL *\/$/;"	m	struct:ext2_inode
+i_flags	ext2.h	/^	uint32_t i_flags;	\/* file flags *\/$/;"	m	struct:ext2_inode
+i_generation	ext2.h	/^	uint32_t i_generation;		\/* file version (for NFS) *\/$/;"	m	struct:ext2_inode
+i_gid	ext2.h	/^	uint16_t i_gid;		\/* low 16 bits of group id *\/$/;"	m	struct:ext2_inode
+i_links_count	ext2.h	/^	uint16_t i_links_count;		\/* links count *\/$/;"	m	struct:ext2_inode
+i_mode	ext2.h	/^	uint16_t i_mode;	\/* file mode *\/$/;"	m	struct:ext2_inode
+i_mtime	ext2.h	/^	uint32_t i_mtime;	\/* modification time *\/$/;"	m	struct:ext2_inode
+i_size	ext2.h	/^	uint32_t i_size;	\/* file size in byte *\/$/;"	m	struct:ext2_inode
+i_size_high	ext2.h	/^	uint32_t i_size_high;		\/* formerly i_dir_acl, directory acl *\/$/;"	m	struct:ext2_inode
+i_uid	ext2.h	/^	uint16_t i_uid;		\/* low 16 bits of own uid *\/$/;"	m	struct:ext2_inode
+index_file	ourhdr.h	/^}index_file;$/;"	t	typeref:struct:__anon16
+init_struct_e2fs	ext2.c	/^int init_struct_e2fs(const char* device, struct filsys_ext2* fs){$/;"	f
+init_struct_fat32	fat32.c	/^int init_struct_fat32(const char* device, struct filsys_fat32* fs){$/;"	f
+l_i_blocks_hi	ext2.h	/^			uint16_t l_i_blocks_hi;$/;"	m	struct:ext2_inode::__anon4::__anon5
+l_i_checksum_lo	ext2.h	/^			uint16_t l_i_checksum_lo;$/;"	m	struct:ext2_inode::__anon4::__anon5
+l_i_file_acl_high	ext2.h	/^			uint16_t l_i_file_acl_high;$/;"	m	struct:ext2_inode::__anon4::__anon5
+l_i_gid_high	ext2.h	/^			uint16_t l_i_gid_high;$/;"	m	struct:ext2_inode::__anon4::__anon5
+l_i_reversed	ext2.h	/^			uint16_t l_i_reversed;$/;"	m	struct:ext2_inode::__anon4::__anon5
+l_i_uid_high	ext2.h	/^			uint16_t l_i_uid_high;$/;"	m	struct:ext2_inode::__anon4::__anon5
+l_i_version	ext2.h	/^			uint32_t l_i_version;	$/;"	m	struct:ext2_inode::__anon1::__anon2
+last32bit	ourhdr.h	/^	uint32_t last32bit; \/* last 32 bit of video block *\/$/;"	m	struct:__anon16
+lastFolderFileNum	ourhdr.h	/^	uint32_t lastFolderFileNum; \/* Properly there isn't a exact division.$/;"	m	struct:__anon15
+linux1	ext2.h	/^		}linux1;$/;"	m	union:ext2_inode::__anon1	typeref:struct:ext2_inode::__anon1::__anon2
+linux2	ext2.h	/^		} linux2;$/;"	m	union:ext2_inode::__anon4	typeref:struct:ext2_inode::__anon4::__anon5
+main	test.c	/^int main(int argc, char** argv){$/;"	f
+min	fat32.h	/^	uint16_t	min		: 6;			\/* 0-59 *\/$/;"	m	struct:__anon11
+month	fat32.h	/^	uint16_t	month	: 4;			\/*  1-12 *\/$/;"	m	struct:__anon10
+offset	ourhdr.h	/^	uint32_t offset; \/* current offset in the file *\/$/;"	m	struct:__anon16
+offset	ourhdr.h	/^	uint64_t offset;$/;"	m	struct:__anon14
+osd1	ext2.h	/^	}osd1;	\/* os dependent 1 *\/$/;"	m	struct:ext2_inode	typeref:union:ext2_inode::__anon1
+osd2	ext2.h	/^	}osd2; \/* os dependent 2 *\/$/;"	m	struct:ext2_inode	typeref:union:ext2_inode::__anon4
+pname	libs.c	/^char * pname = NULL;$/;"	v
+pos2off	ourhdr.h	76;"	d
+pre_allocation_ext2	pre_allocation.c	/^void pre_allocation_ext2(struct filsys_ext2* e2fs){$/;"	f
+pre_allocation_fat32	pre_allocation.c	/^void pre_allocation_fat32(struct filsys_fat32* fs_fat){$/;"	f
+s_blocks_count	ext2.h	/^	uint32_t s_blocks_count;	\/* block number of filsys *\/$/;"	m	struct:ext2_super_block
+s_blocks_per_group	ext2.h	/^	uint32_t s_blocks_per_group;	\/* blocks per group *\/$/;"	m	struct:ext2_super_block
+s_check_interval	ext2.h	/^	uint32_t s_check_interval;	\/* max. time between checks *\/$/;"	m	struct:ext2_super_block
+s_creator_os	ext2.h	/^	uint32_t s_creator_os;		\/* Os *\/$/;"	m	struct:ext2_super_block
+s_def_resgid	ext2.h	/^	uint16_t s_def_resgid;		\/* Default gid for rest blocks *\/$/;"	m	struct:ext2_super_block
+s_def_resuid	ext2.h	/^	uint16_t s_def_resuid;		\/* Default uid for rest blocks *\/$/;"	m	struct:ext2_super_block
+s_errors	ext2.h	/^	uint16_t s_errors;			\/* Behaviours when detecting errors *\/$/;"	m	struct:ext2_super_block
+s_first_data_block	ext2.h	/^	uint32_t s_first_data_block;	\/* first data block *\/$/;"	m	struct:ext2_super_block
+s_frags_per_group	ext2.h	/^	uint32_t s_frags_per_group;	\/* fragments per group *\/$/;"	m	struct:ext2_super_block
+s_free_blocks_count	ext2.h	/^	uint32_t s_free_blocks_count;	\/* number of free blocks(not used and reserved) *\/$/;"	m	struct:ext2_super_block
+s_free_inodes_count	ext2.h	/^	uint32_t s_free_inodes_count;	\/* number of free inodes *\/$/;"	m	struct:ext2_super_block
+s_inodes_count	ext2.h	/^	uint32_t s_inodes_count;	\/* inode number of filsys *\/$/;"	m	struct:ext2_super_block
+s_inodes_per_group	ext2.h	/^	uint32_t s_inodes_per_group;	\/* inodes per group *\/$/;"	m	struct:ext2_super_block
+s_last_check	ext2.h	/^	uint32_t s_last_check;		\/* time of last check *\/$/;"	m	struct:ext2_super_block
+s_log_block_size	ext2.h	/^	uint32_t s_log_block_size;	\/* block size : 1024 * 2^# *\/$/;"	m	struct:ext2_super_block
+s_log_frag_size	ext2.h	/^	uint32_t s_log_frag_size;	\/* fragment size : 1024 * 2^#,this feature isn't used. $/;"	m	struct:ext2_super_block
+s_magic	ext2.h	/^	uint16_t s_magic;			\/* Magic signature *\/$/;"	m	struct:ext2_super_block
+s_max_mnt_count	ext2.h	/^	uint16_t s_max_mnt_count;	\/* Maximal mount count *\/$/;"	m	struct:ext2_super_block
+s_min_rev_level	ext2.h	/^	uint16_t s_min_rev_level;	\/* minor revision level *\/$/;"	m	struct:ext2_super_block
+s_mnt_count	ext2.h	/^	uint16_t s_mnt_count;		\/* Mount count *\/$/;"	m	struct:ext2_super_block
+s_mtime	ext2.h	/^	uint32_t s_mtime;			\/* mount time *\/$/;"	m	struct:ext2_super_block
+s_r_blocks_count	ext2.h	/^	uint32_t s_r_blocks_count;	\/* number of reserved blocks(for super user) *\/$/;"	m	struct:ext2_super_block
+s_rev_level	ext2.h	/^	uint32_t s_rev_level;		\/* revision level *\/$/;"	m	struct:ext2_super_block
+s_state	ext2.h	/^	uint16_t s_state;			\/* File system state *\/$/;"	m	struct:ext2_super_block
+s_wtime	ext2.h	/^	uint32_t s_wtime;			\/* write time *\/$/;"	m	struct:ext2_super_block
+tot_inod_cnt	ext2.h	/^	uint32_t	tot_inod_cnt;	\/* total inode count *\/$/;"	m	struct:filsys_ext2
+tot_secs	fat32.h	/^	uint32_t	tot_secs;$/;"	m	struct:filsys_fat32
+tot_sz	ext2.h	/^	uint64_t	tot_sz;		\/* total size of the partition *\/$/;"	m	struct:filsys_ext2
+tot_sz	fat32.h	/^	uint64_t	tot_sz;$/;"	m	struct:filsys_fat32
+two_sec	fat32.h	/^	uint16_t	two_sec : 5;			\/* 0-29, indicate 0-58 seconds *\/$/;"	m	struct:__anon11
+writeFatEntries	pre_allocation.c	/^static void writeFatEntries(uint32_t entryNum, uint32_t clusNum)$/;"	f	file:
+writePos	ourhdr.h	/^	Pos		writePos;			\/* This describes where to write.$/;"	m	struct:__anon15
+year	fat32.h	/^	uint16_t	year	: 7;			\/*  0-127, plus 1980 *\/$/;"	m	struct:__anon10
