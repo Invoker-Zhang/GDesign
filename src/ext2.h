@@ -191,11 +191,13 @@ struct ext2_inode{
 	uint32_t i_size;	/* file size in byte */
 	uint32_t i_atime;	/* access time */
 	uint32_t i_ctime;	/* inode change time */
+
 	uint32_t i_mtime;	/* modification time */
 	uint32_t i_dtime;	/* deletion time */
 	uint16_t i_gid;		/* low 16 bits of group id */
 	uint16_t i_links_count;		/* links count */
 	uint32_t i_blocks;	/* blocks count */
+
 	uint32_t i_flags;	/* file flags */
 	union{
 		struct {
@@ -208,7 +210,7 @@ struct ext2_inode{
 	uint32_t i_block[EXT2_N_BLOCKS]; /* Pointers to blocks */
 	uint32_t i_generation;		/* file version (for NFS) */
 	uint32_t i_file_acl;		/* file ACL */
-	uint32_t i_size_high;		/* formerly i_dir_acl, directory acl */
+	uint32_t i_dir_acl;		/* formerly i_dir_acl, directory acl */
 	uint32_t i_faddr;			/* fragment addr */
 	union{
 		struct {
@@ -227,7 +229,7 @@ struct ext2_inode{
 			uint16_t h_i_gid_high;
 			uint32_t h_i_author;
 		}hurd2;
-	}osd2; /* os dependent 2 */
+	}i_osd2; /* os dependent 2 */
 };
 
 /* defined i_mode values */
@@ -253,6 +255,28 @@ struct ext2_inode{
 #define EXT2_S_IROTH		0X0004	/* ohters read */
 #define EXT2_S_IWOTH		0X0002	/* others write */
 #define EXT2_S_IXOTH		0X0001	/* othres execute */
+#define EXT2_S_IALL			0X01FF
+
+/* defined i_flag values */
+
+#define EXT2_SECRM_FL		0X00000001	/* secure deletion */
+#define EXT2_UNRM_FL		0X00000002	/* record for undelete */
+#define EXT2_COMPR_FL		0X00000004	/* compressed file */
+#define EXT2_SYNC_FL		0X00000008	/* synchronous updates */
+#define EXT2_IMMUTABLE_FL	0X00000010	/* immutable file */
+#define EXT2_APPEND_FL		0X00000020	/* append only */
+#define EXT2_NODUMP_FL		0X00000040	/* don't dump/delete file */
+#define EXT2_NOATIME_FL		0X00000080	/* don't update .i_atime */
+
+#pragma pack(1)
+struct ext2_dir_entry{
+	uint32_t inode;		// inode number of one file. 0 not used.
+	uint16_t rec_len;	// length of directory entry
+	uint8_t	 name_len;	// length of file name
+	uint8_t	 file_type; // file type
+	char	name[255];	// file name
+};
+#pragma pack()
 
 struct filsys_ext2{
 	const char* device;		/* device name */
@@ -261,7 +285,9 @@ struct filsys_ext2{
 	uint32_t	group_count;		/* total block group count */
 	uint32_t	group_desc_blocks;	/* block count group descriptors occupied. */
 	uint32_t	total_inode_count;	/* total inode count */
+	uint32_t	data_blk_offset; /* data blocks offset against each block group start */
 };
+
 
 extern int init_struct_e2fs(const char* device, struct filsys_ext2 *e2fs);
 

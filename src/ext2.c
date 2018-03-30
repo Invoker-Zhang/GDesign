@@ -15,6 +15,7 @@ int init_struct_e2fs(const char* device, struct filsys_ext2* fs){
 	}
 	fs->total_inode_count = fs->group_count * INODS_PER_GRP;
 	fs->group_desc_blocks = (fs->group_count * 32 - 1) / BLK_SZ + 1;
+	fs->data_blk_offset = 3 + fs->group_desc_blocks + INOD_TBL_BLKS;
 
 	disp16(fs->total_size);
 	disp16(fs->block_count);

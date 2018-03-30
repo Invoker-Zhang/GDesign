@@ -252,9 +252,4 @@ static void createFile(struct filsys_fat32* fs, uint32_t nextClus,
 }
 
 
-void pre_allocation_ext2(struct filsys_ext2* e2fs){
-	;
-}
-
-
 

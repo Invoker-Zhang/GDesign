@@ -16,7 +16,7 @@ a.out: $(objects)
 	gcc -g -o a.out $^
 
 $(objects) : $(objdir)/%.o : $(srcdir)/%.c $(headers)
-	gcc -g -c $< -I $(hdrdir) -o $@ -D TEST_EXT2 -DDEBUG
+	gcc -g -c $< -I $(hdrdir) -o $@ -D TEST_FAT32 -DDEBUG
 
 .PHONY: run clean test tags
 
